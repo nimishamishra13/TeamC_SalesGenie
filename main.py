@@ -23,7 +23,7 @@ Base.metadata.create_all(bind=engine)
 # Include Module 1
 app.include_router(leads_router)
 
-# Include Module 2 (VERY IMPORTANT for fixing 404)
+# Include Module 2 
 app.include_router(intelligence_router)
 
 # Include Module 3 
