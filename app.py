@@ -7,6 +7,19 @@ API = "http://127.0.0.1:8000"
 st.title("SalesGenie Dashboard")
 
 # ===============================
+# ✅ BACKEND STATUS CHECK (ADDED)
+# ===============================
+try:
+    test = requests.get(f"{API}/docs", timeout=3)
+    if test.status_code == 200:
+        st.success("✅ Backend Connected")
+    else:
+        st.warning("⚠️ Backend running but not responding properly")
+except:
+    st.error("❌ Backend NOT running. Start FastAPI server.")
+
+
+# ===============================
 # ➕ CREATE LEAD
 # ===============================
 st.header("➕ Add Lead")
@@ -31,6 +44,7 @@ if st.button("Create Lead"):
                     "status": status,
                     "notes": notes,
                 },
+                timeout=5   # ✅ ADDED
             )
 
             if res.status_code == 200:
@@ -43,6 +57,43 @@ if st.button("Create Lead"):
             st.error(f"Connection Error: {e}")
 
 
+# ======================================================
+# 📂 CSV UPLOAD 
+# ======================================================
+st.header("📂 Upload Leads via CSV")
+
+uploaded_file = st.file_uploader("Upload CSV File", type=["csv"])
+
+if uploaded_file is not None:
+    st.info(f"Selected file: {uploaded_file.name}")
+
+    if st.button("Upload CSV"):
+        try:
+            files = {
+                "file": (uploaded_file.name, uploaded_file.getvalue(), "text/csv")
+            }
+
+            res = requests.post(
+                f"{API}/leads/upload-csv",
+                files=files,
+                timeout=10   # ✅ ADDED
+            )
+
+            if res.status_code == 200:
+                result = res.json()
+
+                st.success("✅ CSV Processed Successfully")
+                st.write("📊 Inserted:", result.get("inserted", 0))
+                st.write("⚠️ Duplicates:", result.get("duplicates", 0))
+                st.write("❌ Invalid:", result.get("invalid", 0))
+            else:
+                st.error("Failed to process CSV")
+                st.text(res.text)
+
+        except Exception as e:
+            st.error(f"Upload Error: {e}")
+
+
 # ===============================
 # LOAD LEADS
 # ===============================
@@ -50,7 +101,7 @@ st.header("All Leads")
 
 if st.button("Load Leads"):
     try:
-        res = requests.get(f"{API}/leads/")
+        res = requests.get(f"{API}/leads/", timeout=5)  # ✅ ADDED
 
         if res.status_code == 200:
             data = res.json()
@@ -67,7 +118,42 @@ if st.button("Load Leads"):
 
     except Exception as e:
         st.error(f"Connection Error: {e}")
+# ===============================
+# 📊 DASHBOARD ANALYTICS 
+# ===============================
+st.header("📊 Lead Insights Dashboard")
 
+if st.button("Show Analytics"):
+    try:
+        res = requests.get(f"{API}/leads/", timeout=5)
+
+        if res.status_code == 200:
+            data = res.json()
+
+            if data:
+                df = pd.DataFrame(data)
+
+                # Leads by Status
+                st.subheader("Leads by Status")
+                status_counts = df["status"].value_counts()
+                st.bar_chart(status_counts)
+
+                # Leads by Company
+                st.subheader("Top Companies")
+                company_counts = df["company"].value_counts().head(5)
+                st.bar_chart(company_counts)
+
+                # Total Leads
+                st.metric("Total Leads", len(df))
+
+            else:
+                st.warning("No data available")
+
+        else:
+            st.error("Failed to load data")
+
+    except Exception as e:
+        st.error(f"Error: {e}")
 
 # ===============================
 # UPDATE LEAD
@@ -93,6 +179,7 @@ if st.button("Update Lead"):
                 "status": new_status,
                 "notes": new_notes,
             },
+            timeout=5   # ✅ ADDED
         )
 
         if res.status_code == 200:
@@ -114,7 +201,7 @@ delete_id = st.number_input("Lead ID to Delete", min_value=1, key="delete")
 
 if st.button("Delete Lead"):
     try:
-        res = requests.delete(f"{API}/leads/{int(delete_id)}")
+        res = requests.delete(f"{API}/leads/{int(delete_id)}", timeout=5)  # ✅ ADDED
 
         if res.status_code == 200:
             st.success("Lead deleted successfully")
@@ -139,7 +226,7 @@ if st.button("Analyze Company"):
     else:
         try:
             url = f"{API}/intelligence/analyze/{cname.strip()}"
-            res = requests.get(url)
+            res = requests.get(url, timeout=5)  # ✅ ADDED
 
             if res.status_code == 200:
                 st.success("Analysis Complete ✅")
@@ -174,8 +261,11 @@ if st.button("Get Score"):
                 "status": status
             }
 
-            # CHANGE: use POST (not GET)
-            res = requests.post(f"{API}/intelligence/score", json=payload)
+            res = requests.post(
+                f"{API}/intelligence/score",
+                json=payload,
+                timeout=5   # ✅ ADDED
+            )
 
             if res.status_code == 200:
                 st.success("Score Generated ✅")
@@ -186,3 +276,83 @@ if st.button("Get Score"):
 
         except Exception as e:
             st.error(f"Connection Error: {e}")
+
+# ===============================
+# 📧 AI OUTREACH GENERATOR (MODULE 3)
+# ===============================
+st.header("📧 AI Outreach Generator")
+
+outreach_name = st.text_input("Lead Name", key="outreach_name")
+outreach_company = st.text_input("Company Name", key="outreach_company")
+outreach_industry = st.selectbox(
+    "Industry",
+    ["tech", "finance", "health", "other"],
+    key="outreach_industry"
+)
+outreach_status = st.selectbox(
+    "Lead Status",
+    ["new", "contacted", "converted"],
+    key="outreach_status"
+)
+
+if st.button("Generate Email"):
+    try:
+        res = requests.post(
+            f"{API}/outreach/generate",
+            json={
+                "name": outreach_name,
+                "company": outreach_company,
+                "industry": outreach_industry,
+                "status": outreach_status
+            },
+            timeout=5
+        )
+
+        if res.status_code == 200:
+            data = res.json()
+            st.subheader("Generated Message")
+            st.write(data["message"])
+        else:
+            st.error("Failed to generate email")
+
+    except Exception as e:
+        st.error(f"Error: {e}")
+
+# ===============================
+# 🤖 AI LEAD SCORING (MODULE 4)
+# ===============================
+st.header("🤖 AI Lead Scoring + Recommendation")
+
+score_company = st.text_input("Company", key="score_company")
+score_industry = st.selectbox(
+    "Industry",
+    ["tech", "finance", "health", "other"],
+    key="score_industry"
+)
+score_status = st.selectbox(
+    "Status",
+    ["new", "contacted", "converted"],
+    key="score_status"
+)
+
+if st.button("Get AI Score"):
+    try:
+        res = requests.post(
+            f"{API}/ai/score",
+            json={
+                "company": score_company,
+                "industry": score_industry,
+                "status": score_status
+            },
+            timeout=5
+        )
+
+        if res.status_code == 200:
+            data = res.json()
+            st.success(f"Score: {data['score']}")
+            st.info(f"Recommendation: {data['recommendation']}")
+        else:
+            st.error("Failed to get score")
+
+    except Exception as e:
+        st.error(f"Error: {e}")                    

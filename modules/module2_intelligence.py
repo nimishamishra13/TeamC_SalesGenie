@@ -1,52 +1,20 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi import APIRouter  
 
-# Create router
-router = APIRouter(prefix="/intelligence", tags=["Company Intelligence"])
+router = APIRouter()            
 
-
-# =========================
-# Company Intelligence API
-# =========================
-@router.get("/analyze/{company_name}")
-def analyze_company(company_name: str):
+@router.get("/intelligence/analyze/{company}")
+def analyze_company(company: str):
     return {
-        "company": company_name,
-        "insight": f"{company_name} is a growing company with strong market presence.",
-        "recommendation": "Good potential lead"
+        "company": company,
+        "insight": f"{company} is growing rapidly in AI space"
     }
 
 
-# =========================
-# Lead Scoring 
-# =========================
-class LeadScoreRequest(BaseModel):
-    company: str
-    status: str
-
-
-# =========================
-# Lead Scoring API
-# =========================
-@router.post("/score")
-def lead_scoring(data: LeadScoreRequest):
-    score = 0
-
-    # Simple scoring logic
-    if data.status.lower() == "new":
-        score = 50
-    elif data.status.lower() == "contacted":
-        score = 70
-    elif data.status.lower() == "qualified":
-        score = 90
-    elif data.status.lower() == "lost":
-        score = 10
-    else:
-        score = 30
+@router.post("/intelligence/score")
+def score_lead(data: dict):
+    score = 80 if data.get("status") == "contacted" else 50
 
     return {
-        "company": data.company,
-        "status": data.status,
-        "lead_score": score,
-        "remark": "Higher score means better conversion chance"
+        "company": data.get("company"),
+        "score": score
     }
