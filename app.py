@@ -6,9 +6,6 @@ API = "http://127.0.0.1:8000"
 
 st.title("SalesGenie Dashboard")
 
-# ===============================
-# ✅ BACKEND STATUS CHECK (ADDED)
-# ===============================
 try:
     test = requests.get(f"{API}/docs", timeout=3)
     if test.status_code == 200:
@@ -44,7 +41,7 @@ if st.button("Create Lead"):
                     "status": status,
                     "notes": notes,
                 },
-                timeout=5   # ✅ ADDED
+                timeout=5  
             )
 
             if res.status_code == 200:
@@ -76,7 +73,7 @@ if uploaded_file is not None:
             res = requests.post(
                 f"{API}/leads/upload-csv",
                 files=files,
-                timeout=10   # ✅ ADDED
+                timeout=10   
             )
 
             if res.status_code == 200:
@@ -101,7 +98,7 @@ st.header("All Leads")
 
 if st.button("Load Leads"):
     try:
-        res = requests.get(f"{API}/leads/", timeout=5)  # ✅ ADDED
+        res = requests.get(f"{API}/leads/", timeout=5)  
 
         if res.status_code == 200:
             data = res.json()
@@ -179,7 +176,7 @@ if st.button("Update Lead"):
                 "status": new_status,
                 "notes": new_notes,
             },
-            timeout=5   # ✅ ADDED
+            timeout=5   
         )
 
         if res.status_code == 200:
@@ -201,7 +198,7 @@ delete_id = st.number_input("Lead ID to Delete", min_value=1, key="delete")
 
 if st.button("Delete Lead"):
     try:
-        res = requests.delete(f"{API}/leads/{int(delete_id)}", timeout=5)  # ✅ ADDED
+        res = requests.delete(f"{API}/leads/{int(delete_id)}", timeout=5) 
 
         if res.status_code == 200:
             st.success("Lead deleted successfully")
@@ -226,7 +223,7 @@ if st.button("Analyze Company"):
     else:
         try:
             url = f"{API}/intelligence/analyze/{cname.strip()}"
-            res = requests.get(url, timeout=5)  # ✅ ADDED
+            res = requests.get(url, timeout=5)  
 
             if res.status_code == 200:
                 st.success("Analysis Complete ✅")
@@ -264,7 +261,7 @@ if st.button("Get Score"):
             res = requests.post(
                 f"{API}/intelligence/score",
                 json=payload,
-                timeout=5   # ✅ ADDED
+                timeout=5   
             )
 
             if res.status_code == 200:
