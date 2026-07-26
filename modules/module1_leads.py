@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from modules.module2_intelligence import analyze_and_score_lead
 from database.connection import SessionLocal
 from database.models import Lead
+
+import pandas as pd
+import io
 
 router = APIRouter(prefix="/leads", tags=["Leads"])
 
@@ -164,3 +167,56 @@ def delete_lead(lead_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return {"message": "Lead deleted successfully"}
+
+# ------------------------
+# IMPORT CSV
+# ------------------------
+@router.post("/import")
+async def import_csv(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    contents = await file.read()
+
+    df = pd.read_csv(io.StringIO(contents.decode("utf-8")))
+
+    imported = 0
+
+    for _, row in df.iterrows():
+
+        data = {
+            "company": row.get("company", ""),
+            "contact": row.get("contact", ""),
+            "designation": row.get("designation", ""),
+            "email": row.get("email", ""),
+            "phone": row.get("phone", ""),
+            "website": row.get("website", ""),
+            "location": row.get("location", ""),
+            "industry": row.get("industry", ""),
+            "notes": row.get("notes", "")
+        }
+        
+        ai = analyze_and_score_lead(data)
+
+        lead = Lead(
+            company=data["company"],
+            contact=data["contact"],
+            designation=data["designation"],
+            email=data["email"],
+            phone=data["phone"],
+            website=data["website"],
+            location=data["location"],
+            industry=data["industry"],
+            notes=data["notes"],
+            score=ai["score"],
+            status=ai["status"]
+        )
+
+        db.add(lead)
+        imported += 1
+
+    db.commit()
+
+    return {
+        "message": f"{imported} leads imported successfully."
+    }

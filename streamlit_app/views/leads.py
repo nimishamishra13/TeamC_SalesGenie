@@ -267,7 +267,7 @@ def show_leads():
     except Exception as e:
         st.error(f"Backend not running: {e}")
         prospects = [] 
-        
+
        # ==========================================================
 # PROSPECT DETAILS PAGE
 # ==========================================================
@@ -419,7 +419,7 @@ def show_leads():
 
             )
 
-        return
+            return
         st.title("👥 Leads & Prospects")
 
         st.caption(
@@ -437,26 +437,57 @@ def show_leads():
     # SEARCH + ACTION BAR
     # ==========================================================
 
-    left, right = st.columns([5,1])
+    left, middle, right = st.columns([5,2,2])
 
     with left:
 
         search = st.text_input(
-            "",
-            placeholder="🔍 Search company..."
+            "Search",
+            placeholder="🔍 Search company...",
+            label_visibility="collapsed"
         )
+
+    with middle:
+
+        uploaded_file = st.file_uploader(
+        "Import CSV",
+        type=["csv"],
+        label_visibility="collapsed"
+    )
 
     with right:
 
-        st.write("")
-
         if st.button(
-            "➕ Add Prospect",
+            "➕ Add Lead",
             type="primary",
             use_container_width=True
         ):
             st.session_state.show_form = True
 
+    if uploaded_file is not None:
+    
+            files = {
+                "file": (
+                    uploaded_file.name,
+                    uploaded_file.getvalue(),
+                    "text/csv"
+                )
+            }
+    
+            response = requests.post(
+                "http://127.0.0.1:8000/leads/import",
+                files=files
+            )
+    
+            if response.status_code == 200:
+                st.success(response.json()["message"])
+                st.rerun()
+            else:
+                st.error("CSV Import Failed")
+        
+
+
+    
 
     st.divider()
 
