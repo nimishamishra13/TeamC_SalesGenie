@@ -458,7 +458,7 @@ def show_leads():
     with right:
 
         if st.button(
-            "➕ Add Lead",
+            "➕ Add Prospect",
             type="primary",
             use_container_width=True
         ):
