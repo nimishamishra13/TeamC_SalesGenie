@@ -1,78 +1,150 @@
-/* ===========================
-   Sidebar
-=========================== */
+/* ==========================================
+   GLOBAL FONT
+========================================== */
+html,
+body,
+[data-testid="stAppViewContainer"] {
+    font-size: 17px !important;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* ==========================================
+   MAIN PAGE
+========================================== */
+.main .block-container {
+    padding-top: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    font-size: 17px;
+}
+
+/* ==========================================
+   SIDEBAR
+========================================== */
 section[data-testid="stSidebar"] {
     background-color: #13294B;
 }
 
 section[data-testid="stSidebar"] * {
     color: white !important;
+    font-size: 17px !important;
+    font-weight: 600 !important;
 }
 
-/* ===========================
-   Buttons
-=========================== */
+/* ==========================================
+   HEADINGS
+========================================== */
+h1 {
+    color: #111827;
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+}
+
+h2 {
+    color: #111827;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+}
+
+h3 {
+    color: #111827;
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
+}
+
+/* ==========================================
+   ALL MARKDOWN / TEXT
+========================================== */
+.stMarkdown,
+.stMarkdown p,
+.stMarkdown span,
+.stMarkdown div,
+label,
+p,
+span {
+    font-size: 17px !important;
+    font-weight: 500;
+    color: #111827;
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
 .stButton > button {
     background-color: #13294B;
     color: white;
     border-radius: 10px;
     border: none;
     padding: 10px 20px;
-    font-weight: 600;
+    font-size: 16px !important;
+    font-weight: 700 !important;
 }
 
 .stButton > button:hover {
     background-color: #1B3A66;
 }
 
-/* ===========================
-   Headings
-=========================== */
-h1, h2, h3 {
-    color: #111827;
+/* ==========================================
+   TEXT INPUTS
+========================================== */
+.stTextInput input,
+.stTextArea textarea,
+.stSelectbox div,
+.stMultiSelect div {
+    font-size: 16px !important;
+    font-weight: 500;
 }
 
-/* ===========================
-   Dashboard Metric Cards
-=========================== */
+/* ==========================================
+   METRIC CARDS
+========================================== */
 div[data-testid="stMetric"] {
-    background: #ffffff !important;
+    background: white !important;
     border: 1px solid #E5E7EB;
     border-radius: 12px;
     padding: 18px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-/* Make ALL text inside metric cards dark */
 div[data-testid="stMetric"] * {
     color: #111827 !important;
 }
 
-/* Metric Label */
 div[data-testid="stMetricLabel"] {
-    color: #6B7280 !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-}
-
-/* Metric Value */
-div[data-testid="stMetricValue"] {
-    color: #111827 !important;
-    font-size: 32px !important;
+    font-size: 17px !important;
     font-weight: 700 !important;
 }
 
-/* Metric Delta */
+div[data-testid="stMetricValue"] {
+    font-size: 36px !important;
+    font-weight: 800 !important;
+}
+
 div[data-testid="stMetricDelta"] {
-    color: #16A34A !important;
+    font-size: 16px !important;
     font-weight: 600 !important;
 }
 
-/* ===========================
-   Main Page
-=========================== */
-.main .block-container {
-    padding-top: 2rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+/* ==========================================
+   EXPANDERS
+========================================== */
+.streamlit-expanderHeader {
+    font-size: 17px !important;
+    font-weight: 700 !important;
+}
+
+/* ==========================================
+   DATAFRAME
+========================================== */
+[data-testid="stDataFrame"] {
+    font-size: 16px !important;
+}
+
+/* ==========================================
+   CHECKBOX / RADIO
+========================================== */
+.stCheckbox label,
+.stRadio label {
+    font-size: 16px !important;
+    font-weight: 500;
 }
