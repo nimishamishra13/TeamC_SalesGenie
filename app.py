@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import pandas as pd
+import plotly.express as px
 
 API = "http://127.0.0.1:8000"
 
@@ -41,7 +42,7 @@ if st.button("Create Lead"):
                     "status": status,
                     "notes": notes,
                 },
-                timeout=5  
+                timeout=5   # ✅ ADDED
             )
 
             if res.status_code == 200:
@@ -98,7 +99,7 @@ st.header("All Leads")
 
 if st.button("Load Leads"):
     try:
-        res = requests.get(f"{API}/leads/", timeout=5)  
+        res = requests.get(f"{API}/leads/", timeout=5)  # ✅ ADDED
 
         if res.status_code == 200:
             data = res.json()
@@ -115,8 +116,9 @@ if st.button("Load Leads"):
 
     except Exception as e:
         st.error(f"Connection Error: {e}")
+
 # ===============================
-# 📊 DASHBOARD ANALYTICS 
+# 📊 DASHBOARD ANALYTICS (NEW)
 # ===============================
 st.header("📊 Lead Insights Dashboard")
 
@@ -152,6 +154,7 @@ if st.button("Show Analytics"):
     except Exception as e:
         st.error(f"Error: {e}")
 
+
 # ===============================
 # UPDATE LEAD
 # ===============================
@@ -176,7 +179,7 @@ if st.button("Update Lead"):
                 "status": new_status,
                 "notes": new_notes,
             },
-            timeout=5   
+            timeout=5  
         )
 
         if res.status_code == 200:
@@ -277,79 +280,860 @@ if st.button("Get Score"):
 # ===============================
 # 📧 AI OUTREACH GENERATOR (MODULE 3)
 # ===============================
+
 st.header("📧 AI Outreach Generator")
 
-outreach_name = st.text_input("Lead Name", key="outreach_name")
-outreach_company = st.text_input("Company Name", key="outreach_company")
+
+outreach_lead_id = st.number_input(
+    "Lead ID",
+    min_value=1,
+    key="outreach_lead_id"
+)
+
+
+outreach_name = st.text_input(
+    "Lead Name",
+    key="outreach_name"
+)
+
+
+outreach_company = st.text_input(
+    "Company Name",
+    key="outreach_company"
+)
+
+
 outreach_industry = st.selectbox(
     "Industry",
-    ["tech", "finance", "health", "other"],
+    [
+        "tech",
+        "finance",
+        "health",
+        "other"
+    ],
     key="outreach_industry"
 )
+
+
 outreach_status = st.selectbox(
     "Lead Status",
-    ["new", "contacted", "converted"],
+    [
+        "new",
+        "contacted",
+        "converted"
+    ],
     key="outreach_status"
 )
 
+
+
 if st.button("Generate Email"):
+
     try:
+
         res = requests.post(
+
             f"{API}/outreach/generate",
+
             json={
+
+                "lead_id": outreach_lead_id,
+
                 "name": outreach_name,
+
                 "company": outreach_company,
+
                 "industry": outreach_industry,
+
                 "status": outreach_status
+
             },
-            timeout=5
+
+            timeout=10
+
         )
 
+
         if res.status_code == 200:
+
             data = res.json()
-            st.subheader("Generated Message")
-            st.write(data["message"])
+
+
+            st.success(
+                "✅ Outreach Generated & Saved"
+            )
+
+
+            st.info(
+                f"Tone: {data['tone']}"
+            )
+
+
+            st.subheader(
+                "Generated Message"
+            )
+
+
+            st.write(
+                data["generated_message"]
+            )
+
+
+            st.write(
+                "Outreach ID:",
+                data["outreach_id"]
+            )
+
+
         else:
-            st.error("Failed to generate email")
+
+            st.error(
+                "Failed to generate outreach"
+            )
+
+            st.text(
+                res.text
+            )
+
 
     except Exception as e:
-        st.error(f"Error: {e}")
 
+        st.error(
+            f"Error: {e}"
+        )
 # ===============================
 # 🤖 AI LEAD SCORING (MODULE 4)
 # ===============================
+
 st.header("🤖 AI Lead Scoring + Recommendation")
 
-score_company = st.text_input("Company", key="score_company")
+
+score_lead_id = st.number_input(
+    "Lead ID",
+    min_value=1,
+    key="score_lead_id"
+)
+
+
+score_company = st.text_input(
+    "Company",
+    key="score_company"
+)
+
+
 score_industry = st.selectbox(
     "Industry",
-    ["tech", "finance", "health", "other"],
+    [
+        "tech",
+        "finance",
+        "health",
+        "other"
+    ],
     key="score_industry"
 )
+
+
 score_status = st.selectbox(
     "Status",
-    ["new", "contacted", "converted"],
+    [
+        "new",
+        "contacted",
+        "qualified",
+        "converted"
+    ],
     key="score_status"
 )
 
+
+
 if st.button("Get AI Score"):
+
     try:
+
         res = requests.post(
+
             f"{API}/ai/score",
+
             json={
+
+                "lead_id": score_lead_id,
+
                 "company": score_company,
+
                 "industry": score_industry,
+
                 "status": score_status
+
             },
-            timeout=5
+
+            timeout=10
         )
 
+
         if res.status_code == 200:
+
             data = res.json()
-            st.success(f"Score: {data['score']}")
-            st.info(f"Recommendation: {data['recommendation']}")
+
+
+            st.success(
+                "✅ AI Score Generated & Saved"
+            )
+
+
+            st.metric(
+                "Lead Score",
+                data["score"]
+            )
+
+
+            st.info(
+                data["recommendation"]
+            )
+
+
+            st.write(
+                "Score ID:",
+                data["score_id"]
+            )
+
+
         else:
-            st.error("Failed to get score")
+
+            st.error(
+                f"Failed to get score ({res.status_code})"
+            )
+
+            st.text(
+                res.text
+            )
+
 
     except Exception as e:
-        st.error(f"Error: {e}")                    
+
+        st.error(
+            f"Error: {e}"
+        )
+# =====================================
+# 🧠 MODULE 5 : CONVERSATION INTELLIGENCE
+# =====================================
+
+
+st.header(
+    "🧠 Conversation Intelligence & CRM Integration"
+)
+
+
+lead_id = st.number_input(
+    "Lead ID",
+    min_value=1,
+    key="conversation_lead"
+)
+
+
+conversation_type = st.selectbox(
+    "Conversation Type",
+    [
+        "Sales Call",
+        "Meeting",
+        "Email"
+    ],
+    key="conversation_type"
+)
+
+
+transcript = st.text_area(
+    "Paste Customer Conversation",
+    height=200,
+    key="conversation_text"
+)
+
+
+
+if st.button(
+    "Analyze Conversation & Sync CRM"
+):
+
+    try:
+
+        res = requests.post(
+
+            f"{API}/conversation/analyze",
+
+            json={
+
+                "lead_id": lead_id,
+
+                "conversation_type":
+                conversation_type,
+
+                "transcript":
+                transcript
+
+            },
+
+            timeout=30
+
+        )
+
+
+        if res.status_code == 200:
+
+
+            data = res.json()
+
+
+            st.success(
+                "✅ Conversation analyzed"
+            )
+
+
+            st.success(
+                "📌 CRM Activity Synced"
+            )
+
+
+            st.subheader(
+                "AI Conversation Insights"
+            )
+
+
+            st.write(
+                data["analysis"]
+            )
+
+
+            st.subheader(
+                "CRM Information"
+            )
+
+
+            st.write(
+                "Lead ID:",
+                data["lead_id"]
+            )
+
+
+            st.write(
+                "Conversation ID:",
+                data["conversation_id"]
+            )
+
+
+            st.write(
+                "CRM Activity ID:",
+                data["crm_activity_id"]
+            )
+
+
+            st.write(
+                "CRM Status:",
+                data["crm_status"]
+            )
+
+
+
+        else:
+
+            st.error(
+                res.text
+            )
+
+
+    except Exception as e:
+
+        st.error(
+            f"Error: {e}"
+        )
+
+# ===============================
+# EXECUTIVE KPI DASHBOARD
+# ===============================
+
+
+st.subheader(
+    "📌 Executive Overview"
+)
+
+
+try:
+
+    res = requests.get(
+        f"{API}/dashboard/summary"
+    )
+
+
+    if res.status_code == 200:
+
+        data = res.json()
+
+
+        c1,c2,c3,c4 = st.columns(4)
+
+
+        c1.metric(
+            "Total Leads",
+            data["total_leads"]
+        )
+
+
+        c2.metric(
+            "New Leads",
+            data["new_leads"]
+        )
+
+
+        c3.metric(
+            "Converted",
+            data["converted_leads"]
+        )
+
+
+        c4.metric(
+            "Conversion Rate",
+            data["conversion_rate"]
+        )
+
+
+except Exception as e:
+
+    st.error(e)
+# =====================================
+# 📊 MODULE 6 : DASHBOARD & SALES ANALYTICS
+# =====================================
+
+
+st.header(
+    "📊 SalesGenie AI Dashboard & Analytics"
+)
+
+
+
+# ===============================
+# SALES SUMMARY
+# ===============================
+
+st.subheader(
+    "📌 Sales Summary"
+)
+
+
+if st.button(
+    "Load Sales Summary"
+):
+
+    try:
+
+        res = requests.get(
+            f"{API}/dashboard/summary",
+            timeout=10
+        )
+
+
+        if res.status_code == 200:
+
+            data = res.json()
+
+
+            col1, col2, col3, col4 = st.columns(4)
+
+
+            col1.metric(
+                "Total Leads",
+                data["total_leads"]
+            )
+
+
+            col2.metric(
+                "New Leads",
+                data["new_leads"]
+            )
+
+
+            col3.metric(
+                "Converted Leads",
+                data["converted_leads"]
+            )
+
+
+            col4.metric(
+                "Conversion Rate",
+                data["conversion_rate"]
+            )
+
+
+        else:
+
+            st.error(
+                "Failed to load summary"
+            )
+
+
+    except Exception as e:
+
+        st.error(
+            f"Error: {e}"
+        )
+
+
+# ===============================
+# PIPELINE STATUS WITH PLOTLY
+# ===============================
+
+st.subheader(
+    "📈 Sales Pipeline Visualization"
+)
+
+
+if st.button("Show Pipeline"):
+
+    try:
+
+        res = requests.get(
+            f"{API}/dashboard/pipeline",
+            timeout=10
+        )
+
+
+        if res.status_code == 200:
+
+            data = res.json()
+
+
+            pipeline = data["pipeline"]
+
+
+            if pipeline:
+
+                df_pipeline = pd.DataFrame(
+                    pipeline.items(),
+                    columns=[
+                        "Status",
+                        "Count"
+                    ]
+                )
+
+
+                # Bar Chart
+
+                fig_bar = px.bar(
+                    df_pipeline,
+                    x="Status",
+                    y="Count",
+                    title="Lead Pipeline Status"
+                )
+
+
+                st.plotly_chart(
+                    fig_bar,
+                    use_container_width=True
+                )
+
+
+
+                # Pie Chart
+
+                fig_pie = px.pie(
+                    df_pipeline,
+                    names="Status",
+                    values="Count",
+                    title="Lead Distribution"
+                )
+
+
+                st.plotly_chart(
+                    fig_pie,
+                    use_container_width=True
+                )
+
+
+            else:
+
+                st.warning(
+                    "No pipeline data available"
+                )
+
+
+        else:
+
+            st.error(
+                res.text
+            )
+
+
+    except Exception as e:
+
+        st.error(
+            f"Error: {e}"
+        )
+
+
+
+# ===============================
+# OUTREACH EFFECTIVENESS
+# ===============================
+
+st.subheader(
+    "📧 Outreach Performance"
+)
+
+
+
+if st.button(
+    "Analyze Outreach"
+):
+
+    try:
+
+        res = requests.get(
+            f"{API}/dashboard/outreach",
+            timeout=10
+        )
+
+
+        if res.status_code == 200:
+
+            data = res.json()
+
+
+            st.metric(
+                "Total AI Outreach Generated",
+                data["total_outreach_generated"]
+            )
+
+
+        else:
+
+            st.error(
+                res.text
+            )
+
+
+    except Exception as e:
+
+        st.error(
+            f"Error: {e}"
+        )
+
+
+
+
+
+# ===============================
+# AI SCORE INSIGHTS
+# ===============================
+
+
+st.subheader(
+    "🤖 AI Lead Score Insights"
+)
+
+
+
+if st.button(
+    "Load AI Insights"
+):
+
+    try:
+
+        res = requests.get(
+            f"{API}/dashboard/scores",
+            timeout=10
+        )
+
+
+        if res.status_code == 200:
+
+            data = res.json()
+
+
+            col1,col2 = st.columns(2)
+
+
+            col1.metric(
+                "Average Lead Score",
+                data["average_score"]
+            )
+
+
+            col2.metric(
+                "High Priority Leads",
+                data["high_quality_leads"]
+            )
+
+
+        else:
+
+            st.error(
+                res.text
+            )
+
+
+    except Exception as e:
+
+        st.error(
+            f"Error: {e}"
+        )
+
+
+
+
+
+# ===============================
+# CRM ACTIVITY REPORT
+# ===============================
+
+
+st.subheader(
+    "🔄 CRM Activity Report"
+)
+
+
+
+if st.button(
+    "Load CRM Report"
+):
+
+    try:
+
+        res = requests.get(
+            f"{API}/dashboard/crm",
+            timeout=10
+        )
+
+
+        if res.status_code == 200:
+
+            data = res.json()
+
+
+            col1,col2 = st.columns(2)
+
+
+            col1.metric(
+                "CRM Activities",
+                data["crm_activities"]
+            )
+
+
+            col2.metric(
+                "Customer Conversations",
+                data["customer_conversations"]
+            )
+
+
+        else:
+
+            st.error(
+                res.text
+            )
+
+
+    except Exception as e:
+
+        st.error(
+            f"Error: {e}"
+        )
+
+
+
+
+
+# ===============================
+# SALES INTELLIGENCE REPORT
+# ===============================
+
+
+st.subheader(
+    "🧠 Sales Intelligence Report"
+)
+
+
+
+if st.button(
+    "Generate Sales Report"
+):
+
+    try:
+
+        res = requests.get(
+            f"{API}/dashboard/report",
+            timeout=10
+        )
+
+
+        if res.status_code == 200:
+
+            data = res.json()
+
+
+            st.json(
+                data
+            )
+
+
+        else:
+
+            st.error(
+                res.text
+            )
+
+
+    except Exception as e:
+
+        st.error(
+            f"Error: {e}"
+        )
+        # =====================================
+# AI FOLLOW-UP RECOMMENDATIONS
+# =====================================
+
+st.header(
+    "🤖 AI Follow-up Recommendations"
+)
+
+
+if st.button(
+    "Generate Follow-up Actions"
+):
+
+    try:
+
+        res = requests.get(
+            f"{API}/dashboard/recommendations",
+            timeout=10
+        )
+
+
+        if res.status_code == 200:
+
+            data = res.json()
+
+
+            st.success(
+                "AI Recommendations Generated"
+            )
+
+
+            df = pd.DataFrame(
+                data["recommendations"]
+            )
+
+
+            st.dataframe(
+                df,
+                use_container_width=True
+            )
+
+
+        else:
+
+            st.error(
+                res.text
+            )
+
+
+    except Exception as e:
+
+        st.error(
+            f"Error: {e}"
+        )
