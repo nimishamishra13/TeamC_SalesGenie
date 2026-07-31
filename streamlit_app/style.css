@@ -76,3 +76,62 @@ div[data-testid="stMetricDelta"] {
     padding-left: 2rem;
     padding-right: 2rem;
 }
+.email-card {
+    background: #ffffff;
+    color: #1f2937;              /* <-- Add this */
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    padding: 20px;
+    line-height: 1.8;
+    font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-top: 10px;
+    white-space: pre-wrap;
+}
+/* ---------- Lead Summary Card ---------- */
+
+.lead-summary {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.lead-summary h3 {
+    margin-top: 0;
+    margin-bottom: 18px;
+    color: #1f2937;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-label {
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.summary-value {
+    font-weight: 600;
+    color: #111827;
+}
+.lead-summary,
+.email-card{
+    transition: all 0.25s ease;
+}
+
+.lead-summary:hover,
+.email-card:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+}

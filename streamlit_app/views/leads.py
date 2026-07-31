@@ -3,13 +3,14 @@ import pandas as pd
 import plotly.express as px
 import sys
 import os
+import json
 
 sys.path.append(
     os.path.abspath(
         os.path.join(os.path.dirname(__file__), "..", "..")
     )
 )
-from ai.ai_analysis import analyze_lead
+from ai.ai_analysis import analyze_lead, build_lead_analysis
 from views.ai_panel import show_ai_analysis
 # ==========================================================
 # SAMPLE DATA
@@ -267,7 +268,8 @@ def show_leads():
     except Exception as e:
         st.error(f"Backend not running: {e}")
         prospects = [] 
-        
+    if "outreach_emails" not in st.session_state:
+        st.session_state.outreach_emails = {}
        # ==========================================================
 # PROSPECT DETAILS PAGE
 # ==========================================================
@@ -319,16 +321,14 @@ def show_leads():
 
         st.divider()
 
-        overview, ai, activity, notes = st.tabs(
+        overview, ai, outreach, activity, notes = st.tabs(
 
             [
 
                 "🏢 Overview",
-
                 "🤖 AI Insights",
-
+                "📧 AI Outreach",
                 "📅 Activity",
-
                 "📝 Notes"
 
             ]
@@ -379,14 +379,107 @@ def show_leads():
 
                 st.write("**📞 Phone**")
                 st.write(p["phone"])
-
+            
         # ======================================================
 
         with ai:
-
             show_ai_analysis(p)
         # ======================================================
+        with outreach:
 
+            st.subheader("📧 AI Outreach")
+
+            lead_id = p["id"]
+
+            if lead_id not in st.session_state.outreach_emails:
+
+                st.info("Generate a personalized outreach email for this lead.")
+
+                if st.button(
+                    "🚀 Generate Outreach Email",
+                    key=f"generate_{lead_id}",
+                    type="primary",
+                    use_container_width=True,
+                ):
+
+                    with st.spinner("🔍 Analyzing lead..."):
+                        analysis = build_lead_analysis(p)
+
+                    with st.spinner("✍️ Generating personalized email..."):
+
+                        response = requests.post(
+                            "http://127.0.0.1:8000/outreach/generate",
+                            json={
+                                "name": p["contact"],
+                                "company": p["company"],
+                                "industry": p["industry"],
+                                "status": p["status"],
+                                "score": analysis["lead_score"],
+                                "analysis": json.dumps(analysis, indent=2),
+                            },
+                        )
+
+                    if response.status_code == 200:
+
+                        st.session_state.outreach_emails[lead_id] = {
+                            "email": response.json(),
+                            "analysis": analysis,
+                        }
+
+                        st.rerun()
+
+                    else:
+                        st.error("Unable to generate outreach email.")
+
+            else:
+
+                data = st.session_state.outreach_emails[lead_id]
+
+                email = data["email"]
+                analysis = data["analysis"]
+                st.subheader("🎯 Recommended Tone")
+                st.info(email["tone"])
+                st.subheader("📧 Subject")
+                st.info(email["subject"])
+                st.markdown(
+                    f"""
+                    <div class="email-card">
+                    {email["message"].replace("\n","<br>")}
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+                st.subheader("💡 Talking Points")
+
+                for point in email["talking_points"]:
+                    st.success(point)
+
+                if st.button(
+                    "🔄 Regenerate Email",
+                    key=f"regen_{lead_id}",
+                    use_container_width=True,
+                ):
+
+                    with st.spinner("Generating a fresh version..."):
+
+                        response = requests.post(
+                            "http://127.0.0.1:8000/outreach/generate",
+                            json={
+                                "name": p["contact"],
+                                "company": p["company"],
+                                "industry": p["industry"],
+                                "status": p["status"],
+                                "score": analysis["lead_score"],
+                                "analysis": json.dumps(analysis, indent=2),
+                            },
+                        )
+
+                    if response.status_code == 200:
+
+                        st.session_state.outreach_emails[lead_id]["email"] = response.json()
+
+                        st.rerun()
         with activity:
 
             st.markdown("### 📅 Activity Timeline")
@@ -419,7 +512,7 @@ def show_leads():
 
             )
 
-        return
+            return
         st.title("👥 Leads & Prospects")
 
         st.caption(
@@ -437,18 +530,25 @@ def show_leads():
     # SEARCH + ACTION BAR
     # ==========================================================
 
-    left, right = st.columns([5,1])
+    left, middle, right = st.columns([5,2,2])
 
     with left:
 
         search = st.text_input(
-            "",
-            placeholder="🔍 Search company..."
+            "Search",
+            placeholder="🔍 Search company...",
+            label_visibility="collapsed"
         )
 
-    with right:
+    with middle:
 
-        st.write("")
+        uploaded_file = st.file_uploader(
+        "Import CSV",
+        type=["csv"],
+        label_visibility="collapsed"
+    )
+
+    with right:
 
         if st.button(
             "➕ Add Prospect",
@@ -457,6 +557,30 @@ def show_leads():
         ):
             st.session_state.show_form = True
 
+    if uploaded_file is not None:
+    
+            files = {
+                "file": (
+                    uploaded_file.name,
+                    uploaded_file.getvalue(),
+                    "text/csv"
+                )
+            }
+    
+            response = requests.post(
+                "http://127.0.0.1:8000/leads/import",
+                files=files
+            )
+    
+            if response.status_code == 200:
+                st.success(response.json()["message"])
+                st.rerun()
+            else:
+                st.error("CSV Import Failed")
+        
+
+
+    
 
     st.divider()
 
