@@ -1,46 +1,155 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
-router = APIRouter(prefix="/ai", tags=["AI Scoring"])
+from database.connection import get_db
+from database.models import LeadScore
+
+
+
+router = APIRouter(
+    prefix="/ai",
+    tags=["AI Scoring"]
+)
+
 
 
 class ScoreRequest(BaseModel):
+
+    lead_id: int
     company: str
     status: str
     industry: str
 
 
+
+
 @router.post("/score")
-def score_lead(data: ScoreRequest):
+def score_lead(
+    data: ScoreRequest,
+    db: Session = Depends(get_db)
+):
 
-    score = 50  # base score
 
-    # Status impact
+    score = 50
+
+
+
+    # Status based scoring
+
     if data.status == "converted":
+
         score += 40
+
+
     elif data.status == "contacted":
+
         score += 20
 
-    # Industry impact
-    if data.industry == "tech":
+
+
+    elif data.status == "qualified":
+
+        score += 30
+
+
+
+    # Industry scoring
+
+    if data.industry.lower() == "tech":
+
         score += 10
-    elif data.industry == "finance":
+
+
+    elif data.industry.lower() == "finance":
+
         score += 5
 
-    # Cap score
-    score = min(score, 100)
 
-    # Recommendation logic
-    if score > 80:
-        action = "Close deal immediately"
-    elif score > 60:
-        action = "Schedule meeting"
-    elif score > 40:
-        action = "Send follow-up email"
+
+    # Maximum score
+
+    score = min(score,100)
+
+
+
+    # Recommendation
+
+    if score >= 80:
+
+        recommendation = (
+            "High priority lead. "
+            "Close deal immediately."
+        )
+
+
+    elif score >= 60:
+
+        recommendation = (
+            "Warm lead. "
+            "Schedule meeting."
+        )
+
+
+    elif score >= 40:
+
+        recommendation = (
+            "Follow up with personalized outreach."
+        )
+
+
     else:
-        action = "Cold outreach needed"
+
+        recommendation = (
+            "Cold lead. "
+            "Start awareness campaign."
+        )
+
+
+
+    # Save scoring history
+
+    score_record = LeadScore(
+
+        lead_id=data.lead_id,
+
+        company=data.company,
+
+        industry=data.industry,
+
+        score=score,
+
+        recommendation=recommendation
+
+    )
+
+
+    db.add(score_record)
+
+    db.commit()
+
+    db.refresh(score_record)
+
+
 
     return {
-        "score": score,
-        "recommendation": action
+
+        "message":
+        "Lead score generated and saved successfully",
+
+        "score_id":
+        score_record.id,
+
+        "lead_id":
+        data.lead_id,
+
+        "company":
+        data.company,
+
+        "score":
+        score,
+
+        "recommendation":
+        recommendation
+
     }
