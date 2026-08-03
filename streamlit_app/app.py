@@ -1,12 +1,14 @@
 import streamlit as st
 from pathlib import Path
-from views.settings import show_settings
+
 from components.sidebar import show_sidebar
 from views.dashboard import show_dashboard
 from views.leads import show_leads
+from views.settings import show_settings
+
 from views.login import show_login
 from views.register import show_register
-
+from views.forgot_password import show_forgot_password
 
 st.set_page_config(
     page_title="SalesGenie",
@@ -14,7 +16,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
 
 style_path = Path(__file__).parent / "style.css"
 
@@ -25,26 +26,26 @@ if style_path.exists():
             unsafe_allow_html=True
         )
 
-
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
 
 if "auth_page" not in st.session_state:
     st.session_state["auth_page"] = "login"
 
-
 if not st.session_state["logged_in"]:
 
-    if st.session_state["auth_page"] == "register":
-        show_register()
-    else:
+    if st.session_state["auth_page"] == "login":
         show_login()
+
+    elif st.session_state["auth_page"] == "register":
+        show_register()
+
+    elif st.session_state["auth_page"] == "forgot_password":
+        show_forgot_password()
 
     st.stop()
 
-
 page = show_sidebar()
-
 
 if page == "📊 Overview":
     show_dashboard()

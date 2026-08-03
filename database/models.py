@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String
 from database.connection import Base
 
 class Lead(Base):
@@ -37,3 +37,5 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
 
     password_hash = Column(String, nullable=False)
+    failed_attempts = Column(Integer, default=0)
+    is_locked = Column(Boolean, default=False)
