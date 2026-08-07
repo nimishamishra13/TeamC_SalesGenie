@@ -1,0 +1,501 @@
+industry,company_size,lead_status,engagement_score,tech_stack_match,budget_score,website_visits,email_opens,meetings,converted
+Software,SMB,Negotiation,73,23,36,9,0,5,1
+Other,Enterprise,New,24,33,39,25,11,0,1
+Finance,SMB,Contacted,92,81,29,16,8,5,1
+Healthcare,SMB,Contacted,96,40,89,4,1,2,0
+Technology,Startup,Qualified,21,80,80,8,10,2,1
+Other,Startup,Contacted,64,64,61,11,5,5,1
+Retail,Enterprise,Negotiation,48,34,44,9,7,5,1
+Other,SMB,Proposal Sent,77,36,28,8,10,0,1
+Technology,Enterprise,Proposal Sent,22,62,81,2,12,1,1
+Other,SMB,Negotiation,22,99,33,1,3,2,0
+Healthcare,Enterprise,New,49,95,23,2,3,3,0
+Education,SMB,Proposal Sent,70,44,39,7,2,5,1
+Manufacturing,Enterprise,Contacted,85,93,85,18,0,3,1
+Technology,SMB,Qualified,42,30,32,16,3,4,1
+Other,Startup,Contacted,76,75,86,21,1,3,1
+Education,Startup,New,85,69,49,8,9,0,0
+Finance,SMB,Contacted,31,52,73,12,10,1,1
+Other,Startup,Negotiation,98,87,98,1,3,2,1
+Manufacturing,Startup,Contacted,93,61,98,8,4,5,1
+Education,SMB,New,68,36,100,16,10,4,1
+Finance,SMB,New,84,75,60,12,11,2,1
+IT Services,Startup,Qualified,58,57,49,17,6,2,1
+Software,Startup,Proposal Sent,73,45,49,6,0,1,0
+Technology,Startup,Qualified,41,40,71,15,1,5,1
+Manufacturing,SMB,Negotiation,84,74,82,1,6,1,1
+Technology,SMB,New,56,21,35,24,9,2,1
+Retail,Startup,Contacted,84,89,90,24,0,4,1
+Retail,Enterprise,New,60,40,79,8,1,0,0
+IT Services,Enterprise,Qualified,95,50,44,13,4,5,1
+Manufacturing,Startup,Contacted,64,83,20,22,12,1,1
+Other,SMB,New,32,69,36,22,0,1,0
+Retail,Startup,Contacted,23,71,59,13,0,5,0
+Education,Enterprise,New,84,37,65,14,2,0,0
+Manufacturing,Enterprise,Proposal Sent,24,26,77,9,3,2,0
+Software,Enterprise,Contacted,70,73,97,10,8,4,1
+Healthcare,SMB,Contacted,82,85,41,22,0,4,1
+Healthcare,Enterprise,Negotiation,97,65,83,18,5,3,1
+Other,SMB,Qualified,43,55,50,22,9,2,1
+Technology,Startup,Qualified,20,64,83,17,5,3,1
+Retail,Enterprise,Negotiation,69,23,27,8,9,0,1
+Education,Enterprise,Qualified,78,21,78,20,12,5,1
+IT Services,Enterprise,Negotiation,88,72,63,10,7,2,1
+Software,SMB,Qualified,80,58,21,24,12,1,1
+IT Services,Startup,Qualified,20,88,28,12,1,2,0
+Technology,SMB,New,72,39,48,23,1,1,1
+IT Services,Enterprise,Contacted,67,52,47,8,12,5,1
+Other,Startup,Contacted,32,83,33,25,3,3,1
+IT Services,Enterprise,Qualified,94,60,21,3,4,2,1
+Software,Enterprise,Negotiation,23,31,56,5,7,2,1
+Other,Enterprise,Proposal Sent,99,79,81,15,10,3,1
+Software,Enterprise,Contacted,43,77,96,18,10,4,1
+Finance,Startup,Proposal Sent,46,20,69,13,5,0,0
+Education,Startup,Contacted,59,91,82,7,11,2,1
+IT Services,Startup,New,61,21,98,3,11,2,0
+Healthcare,Enterprise,Proposal Sent,70,89,39,2,5,3,1
+Software,SMB,Qualified,54,42,71,19,6,1,1
+Healthcare,SMB,New,58,39,88,16,11,3,1
+Retail,SMB,New,97,88,91,16,4,0,1
+Healthcare,Startup,Contacted,51,95,69,12,1,1,0
+Healthcare,SMB,Proposal Sent,83,96,96,18,1,0,1
+Education,Enterprise,Qualified,36,34,31,11,10,5,1
+IT Services,Startup,Qualified,77,83,58,18,12,1,1
+Manufacturing,SMB,New,98,63,86,19,3,1,1
+Healthcare,SMB,New,37,86,70,20,1,5,1
+IT Services,Startup,Qualified,48,39,44,9,4,5,1
+Retail,SMB,Negotiation,80,72,97,15,0,1,1
+Software,SMB,Contacted,89,20,65,20,11,4,1
+Finance,Startup,New,62,62,55,5,2,5,0
+Manufacturing,SMB,Proposal Sent,60,36,46,7,0,2,0
+Healthcare,SMB,Negotiation,71,31,98,1,0,2,0
+Retail,Enterprise,New,94,21,61,2,10,0,0
+Retail,Startup,Qualified,83,74,61,20,6,3,1
+Retail,SMB,Contacted,57,47,32,13,4,5,1
+Other,Enterprise,New,25,99,43,6,6,3,0
+Healthcare,SMB,New,38,42,72,10,2,1,0
+Technology,SMB,Proposal Sent,74,37,33,23,4,3,1
+Healthcare,SMB,Negotiation,87,86,97,5,0,5,1
+Technology,Startup,Qualified,64,68,57,14,2,2,1
+Software,Enterprise,Negotiation,60,35,90,9,11,4,1
+Manufacturing,SMB,Negotiation,71,26,24,1,5,3,0
+Healthcare,SMB,Proposal Sent,77,22,58,12,9,2,1
+Healthcare,Startup,Negotiation,95,75,78,5,11,5,1
+Healthcare,Startup,Qualified,67,54,92,14,10,1,1
+Manufacturing,Startup,Qualified,28,31,92,14,7,1,0
+IT Services,Startup,Qualified,60,72,52,19,1,5,1
+Software,SMB,Contacted,73,84,87,14,6,1,1
+Finance,Startup,Negotiation,20,92,39,8,11,1,1
+Retail,SMB,Qualified,86,87,33,8,4,0,0
+Healthcare,Startup,Contacted,69,74,100,1,9,5,1
+Manufacturing,Startup,Contacted,25,30,87,24,7,2,1
+Healthcare,Startup,Negotiation,84,66,20,6,8,4,1
+Software,SMB,Negotiation,40,47,68,17,10,4,1
+Retail,Enterprise,Proposal Sent,51,27,68,11,11,4,1
+IT Services,Startup,Proposal Sent,60,34,42,6,12,3,1
+Education,Startup,Qualified,60,76,36,15,8,5,1
+Finance,Enterprise,Contacted,42,40,90,12,5,5,1
+IT Services,Enterprise,Negotiation,82,97,36,20,5,2,1
+Finance,SMB,Qualified,54,83,57,25,9,3,1
+Other,Startup,Contacted,68,32,41,14,7,5,1
+Education,Enterprise,Proposal Sent,24,53,42,17,5,3,1
+Education,Startup,Negotiation,21,97,21,18,6,0,1
+Technology,Enterprise,Contacted,83,73,25,22,6,2,1
+Healthcare,Enterprise,Qualified,97,53,46,18,0,3,1
+Manufacturing,Enterprise,Proposal Sent,52,49,93,8,4,1,1
+Retail,Startup,Proposal Sent,92,25,56,9,2,0,0
+Software,Startup,Contacted,34,26,35,14,1,4,0
+Retail,Enterprise,New,81,41,59,21,3,2,1
+Retail,Enterprise,Proposal Sent,23,85,54,1,9,0,0
+Education,Enterprise,New,37,30,91,11,2,0,0
+IT Services,SMB,Proposal Sent,86,91,61,19,12,1,1
+Other,Enterprise,Contacted,49,50,64,3,9,1,0
+Finance,SMB,Proposal Sent,44,63,41,1,5,5,1
+Retail,Enterprise,Qualified,74,55,75,7,7,4,1
+Finance,SMB,Proposal Sent,36,66,95,15,10,4,1
+Finance,Enterprise,Negotiation,100,79,76,21,11,4,1
+Other,SMB,Negotiation,72,48,93,22,12,2,1
+Other,Enterprise,New,77,47,100,21,10,0,1
+IT Services,Startup,Negotiation,54,45,65,13,1,1,0
+Technology,Enterprise,Contacted,68,45,89,2,10,4,1
+Education,Startup,Negotiation,57,99,57,18,8,0,1
+Other,Startup,New,99,91,54,17,0,2,1
+Technology,Enterprise,Qualified,86,40,77,19,1,1,1
+Healthcare,Startup,Contacted,27,34,44,22,3,0,0
+Software,Enterprise,New,83,55,52,21,5,5,1
+Other,Enterprise,Negotiation,28,42,64,18,10,0,1
+Finance,Startup,Contacted,72,39,66,23,5,0,1
+Other,SMB,Negotiation,77,87,46,5,7,1,1
+IT Services,Startup,Negotiation,92,72,98,2,10,2,1
+IT Services,Startup,New,77,23,45,25,6,0,1
+Manufacturing,SMB,Contacted,65,42,81,17,3,0,1
+Healthcare,Enterprise,New,94,31,31,17,6,1,1
+Education,Enterprise,Qualified,23,50,70,4,6,1,0
+Software,SMB,Qualified,87,72,41,22,3,3,1
+Other,Enterprise,Contacted,40,91,45,3,9,4,1
+Manufacturing,Enterprise,Contacted,94,94,85,25,8,2,1
+Software,Enterprise,Qualified,71,45,38,10,4,4,1
+Education,SMB,Proposal Sent,67,20,33,9,10,4,1
+Education,Startup,Qualified,92,95,90,17,12,1,1
+Manufacturing,SMB,Contacted,48,27,98,23,0,5,1
+Other,Enterprise,Contacted,61,64,53,20,3,5,1
+Healthcare,Enterprise,Negotiation,22,79,28,13,5,3,1
+Manufacturing,SMB,Proposal Sent,87,26,57,5,10,4,1
+Retail,SMB,New,62,42,79,6,2,4,0
+Finance,SMB,Negotiation,53,95,85,11,6,4,1
+Finance,SMB,Qualified,27,97,65,22,7,5,1
+Other,SMB,New,54,47,71,14,10,0,1
+Finance,SMB,Proposal Sent,92,40,48,25,5,5,1
+Healthcare,SMB,New,55,94,72,14,7,5,1
+Technology,Startup,Contacted,65,93,55,10,7,5,1
+Technology,SMB,Contacted,31,37,64,21,9,3,1
+Other,Enterprise,Qualified,76,75,55,3,0,0,0
+Other,SMB,Qualified,83,81,46,1,11,4,1
+Technology,SMB,Qualified,88,30,99,23,6,3,1
+Finance,Startup,Contacted,40,47,87,13,12,5,1
+Technology,Startup,Qualified,89,65,54,20,8,0,1
+Other,Enterprise,Contacted,22,35,82,8,10,4,1
+Technology,Enterprise,Proposal Sent,99,99,98,10,12,5,1
+Manufacturing,Enterprise,Negotiation,74,42,37,5,6,4,1
+Software,Startup,New,96,98,81,20,7,0,1
+Software,Enterprise,Contacted,86,87,50,9,3,4,1
+Technology,SMB,Contacted,94,53,98,11,10,4,1
+Manufacturing,Startup,Qualified,63,22,90,19,11,0,1
+Other,Enterprise,Qualified,50,99,60,17,9,2,1
+Software,Enterprise,Negotiation,35,80,40,17,0,1,1
+Other,Startup,Contacted,52,50,81,16,10,0,1
+Finance,Startup,Proposal Sent,99,64,100,17,5,3,1
+IT Services,SMB,Qualified,55,57,80,24,12,0,1
+Finance,SMB,Proposal Sent,38,76,60,12,4,3,1
+Manufacturing,Enterprise,Qualified,88,79,20,7,5,0,1
+Manufacturing,SMB,Contacted,59,39,26,23,8,4,1
+IT Services,Startup,New,69,64,44,15,10,3,1
+Finance,SMB,Qualified,37,64,91,14,7,0,1
+IT Services,Enterprise,Proposal Sent,24,86,77,20,10,3,1
+Software,Enterprise,Contacted,90,52,44,13,12,5,1
+Software,Startup,Qualified,52,77,79,9,4,4,1
+Healthcare,SMB,Qualified,90,86,60,8,6,2,1
+Software,Startup,Qualified,69,80,95,2,0,2,0
+Education,Enterprise,Qualified,23,24,43,1,8,1,0
+IT Services,SMB,Negotiation,85,94,61,1,0,0,0
+Other,SMB,Negotiation,47,90,88,23,7,4,1
+Manufacturing,SMB,Contacted,23,84,49,24,12,5,1
+Healthcare,SMB,Negotiation,67,78,89,12,3,2,1
+Healthcare,SMB,Qualified,54,39,56,6,12,1,1
+Manufacturing,SMB,Proposal Sent,46,85,66,12,5,5,1
+Healthcare,Startup,Negotiation,91,60,87,7,1,2,1
+Retail,Enterprise,New,83,86,47,6,4,3,1
+Technology,SMB,New,63,43,88,9,9,4,1
+Software,Enterprise,Proposal Sent,31,40,56,3,9,4,1
+Healthcare,Startup,Contacted,82,22,89,8,1,4,1
+IT Services,Enterprise,New,69,91,69,21,6,1,1
+Technology,SMB,Proposal Sent,48,62,45,20,9,1,1
+Technology,SMB,Negotiation,22,40,75,25,3,1,1
+Finance,SMB,Proposal Sent,67,29,42,5,4,1,0
+Retail,Enterprise,Contacted,37,27,67,16,0,1,0
+Healthcare,Enterprise,Contacted,54,82,57,24,1,0,1
+Retail,SMB,Proposal Sent,100,93,91,16,4,0,1
+Other,Enterprise,New,82,78,26,5,2,4,1
+Other,SMB,New,67,70,71,16,12,3,1
+Retail,Startup,Contacted,26,75,68,23,1,5,1
+IT Services,Enterprise,Negotiation,48,40,62,5,7,2,1
+Software,SMB,Proposal Sent,55,66,86,6,8,5,1
+Manufacturing,SMB,Proposal Sent,67,20,45,20,12,5,1
+IT Services,Enterprise,Proposal Sent,55,39,43,25,6,0,1
+Technology,SMB,Negotiation,20,68,60,24,10,0,1
+IT Services,SMB,Proposal Sent,93,54,40,7,1,5,1
+Manufacturing,Enterprise,Contacted,68,87,91,15,0,5,1
+Retail,Startup,Proposal Sent,69,53,89,1,9,0,0
+Retail,SMB,Qualified,79,95,20,23,7,0,1
+Other,Enterprise,Contacted,67,73,65,8,9,1,1
+Healthcare,SMB,Proposal Sent,72,29,25,1,10,4,1
+Manufacturing,Startup,Proposal Sent,76,42,68,13,11,4,1
+Software,Startup,Contacted,79,78,90,2,5,4,1
+Software,SMB,Qualified,44,20,72,11,11,5,1
+Finance,SMB,Proposal Sent,32,91,31,4,5,4,1
+Manufacturing,Startup,Qualified,89,45,78,24,10,0,1
+Finance,SMB,New,34,20,62,12,7,1,0
+Software,Startup,New,20,55,45,3,1,2,0
+Software,Startup,Contacted,31,57,45,15,9,2,1
+Other,SMB,Proposal Sent,28,96,28,25,3,1,1
+Software,SMB,Negotiation,64,44,48,19,12,4,1
+Finance,Startup,Negotiation,93,45,65,7,7,4,1
+IT Services,SMB,Contacted,44,82,67,11,8,0,1
+Education,SMB,Qualified,41,28,22,4,2,0,0
+IT Services,Startup,Proposal Sent,28,27,29,4,12,0,0
+Healthcare,SMB,Contacted,66,38,35,21,10,4,1
+Other,SMB,New,31,91,43,1,7,1,0
+Manufacturing,Enterprise,Negotiation,32,69,37,3,1,0,0
+Manufacturing,Startup,Contacted,37,29,83,23,12,1,1
+Technology,SMB,Proposal Sent,47,100,80,21,6,5,1
+Education,Enterprise,New,88,81,23,7,10,2,1
+Education,Startup,New,51,97,35,14,1,4,0
+Healthcare,Enterprise,New,37,32,65,11,6,5,1
+Other,Startup,Qualified,38,100,44,7,0,0,0
+Other,Enterprise,Contacted,84,58,35,16,10,0,1
+Other,Enterprise,Negotiation,74,54,39,6,3,0,1
+Software,Startup,Negotiation,97,85,48,6,9,4,1
+Healthcare,Enterprise,New,83,57,39,5,2,1,0
+Education,Startup,New,25,89,91,8,3,3,0
+Software,Startup,Negotiation,33,95,54,13,7,4,1
+Technology,Startup,Proposal Sent,78,23,29,18,12,0,1
+Technology,SMB,Negotiation,62,48,64,17,1,1,1
+Education,SMB,New,71,85,35,11,6,3,1
+Healthcare,SMB,Negotiation,35,100,89,6,12,5,1
+IT Services,Startup,Qualified,35,55,29,17,12,5,1
+Technology,Enterprise,Proposal Sent,68,36,78,20,5,5,1
+Software,Startup,Proposal Sent,61,39,97,12,5,4,1
+Software,Enterprise,Negotiation,36,82,58,22,12,0,1
+Finance,Startup,Proposal Sent,43,57,92,9,10,3,1
+Finance,Startup,Negotiation,38,73,21,10,3,3,1
+Retail,SMB,Qualified,21,81,20,19,10,3,1
+Retail,SMB,Qualified,30,52,51,15,2,0,0
+Technology,SMB,Contacted,98,27,58,1,10,0,0
+Manufacturing,Startup,Qualified,33,58,40,9,6,2,0
+Finance,SMB,New,21,96,51,19,8,3,1
+Other,Startup,Negotiation,83,55,73,18,2,3,1
+IT Services,Enterprise,Proposal Sent,86,36,55,10,10,2,1
+Retail,SMB,New,100,47,53,17,11,1,1
+Technology,Enterprise,Qualified,29,68,97,20,11,5,1
+Healthcare,Startup,Contacted,56,63,33,12,1,2,0
+Education,Enterprise,Proposal Sent,88,86,69,16,0,0,1
+Software,Startup,New,28,38,20,20,9,0,0
+IT Services,Startup,Contacted,35,29,100,25,8,3,1
+Other,SMB,Negotiation,52,100,96,12,11,2,1
+Other,SMB,Qualified,54,89,54,12,6,4,1
+Other,Startup,Proposal Sent,73,64,49,5,6,5,1
+Technology,Enterprise,Negotiation,28,56,35,18,4,5,1
+Technology,SMB,Contacted,100,100,68,5,3,5,1
+Software,SMB,Contacted,96,68,91,19,6,0,1
+Technology,Startup,Contacted,96,80,69,4,5,3,1
+Finance,Enterprise,Negotiation,88,77,27,4,1,3,1
+Finance,Enterprise,Contacted,67,96,71,14,7,3,1
+Manufacturing,SMB,Contacted,40,32,78,6,11,3,1
+Other,Enterprise,New,68,56,91,2,4,1,0
+Education,SMB,Proposal Sent,93,50,41,7,6,0,1
+Other,SMB,Proposal Sent,80,73,82,22,0,2,1
+Software,SMB,Negotiation,50,31,50,23,5,2,1
+Education,Startup,Proposal Sent,47,40,64,11,11,5,1
+Manufacturing,SMB,Qualified,56,93,96,17,11,3,1
+Other,Enterprise,Contacted,36,90,35,9,1,1,0
+IT Services,Startup,New,73,92,96,10,7,2,1
+Healthcare,SMB,Negotiation,97,60,54,5,2,2,1
+Healthcare,Startup,Contacted,62,49,96,19,1,1,1
+Education,SMB,Proposal Sent,60,38,50,18,2,4,1
+Manufacturing,SMB,New,68,31,82,13,4,5,1
+Retail,Enterprise,Qualified,89,88,68,1,8,5,1
+Education,SMB,Negotiation,37,26,42,4,9,2,0
+Manufacturing,Startup,New,83,74,82,16,2,5,1
+Software,Startup,Negotiation,47,47,22,12,12,1,1
+IT Services,SMB,Negotiation,64,31,23,8,0,5,1
+Healthcare,Startup,Contacted,35,87,77,18,8,1,1
+Other,Enterprise,Negotiation,22,72,69,15,1,1,1
+Technology,Enterprise,Proposal Sent,80,94,53,2,11,2,1
+IT Services,Startup,New,85,35,94,18,11,1,1
+Software,Startup,New,43,43,50,9,5,5,0
+IT Services,Enterprise,Negotiation,29,45,57,15,2,5,1
+Software,SMB,Qualified,86,56,48,13,0,0,0
+Education,Startup,Contacted,61,47,23,8,6,5,1
+Manufacturing,Enterprise,Contacted,25,49,90,14,9,5,1
+Software,Startup,Proposal Sent,95,26,98,12,9,3,1
+Other,SMB,Negotiation,69,91,60,24,2,1,1
+Manufacturing,Startup,Negotiation,41,23,46,23,11,3,1
+Retail,Startup,Qualified,30,79,84,19,5,2,1
+IT Services,Startup,New,26,44,39,2,7,5,0
+Software,SMB,Negotiation,72,30,33,14,2,5,1
+Manufacturing,Enterprise,Qualified,70,69,77,21,12,1,1
+Manufacturing,Enterprise,Qualified,27,46,30,6,0,1,0
+Healthcare,SMB,New,82,37,56,12,8,2,1
+Education,Enterprise,Contacted,89,86,44,16,2,2,1
+IT Services,SMB,Proposal Sent,22,57,63,1,8,2,0
+Healthcare,SMB,Proposal Sent,100,71,32,10,10,0,1
+Healthcare,Enterprise,Qualified,28,56,34,21,12,3,1
+IT Services,SMB,Contacted,53,74,22,7,4,5,1
+Software,Startup,Proposal Sent,85,20,41,14,9,2,1
+Finance,SMB,New,76,87,31,14,5,2,1
+Technology,Enterprise,New,57,70,21,10,1,2,0
+Retail,Enterprise,Qualified,74,36,52,9,12,0,1
+Technology,SMB,Qualified,69,27,67,8,6,5,1
+Finance,Enterprise,Negotiation,94,87,85,10,5,3,1
+Retail,Enterprise,Qualified,55,61,58,17,4,3,1
+Education,Startup,Negotiation,24,44,99,25,6,5,1
+Finance,Enterprise,Qualified,26,20,99,12,4,5,1
+Education,Startup,Contacted,39,97,51,22,3,0,1
+Healthcare,Enterprise,Negotiation,21,90,78,6,4,0,1
+Technology,Startup,Contacted,66,29,71,8,5,4,1
+Finance,Enterprise,Proposal Sent,57,29,49,25,1,2,1
+Other,Startup,New,41,64,56,9,8,3,0
+Other,Enterprise,Qualified,88,85,64,19,1,2,1
+Finance,SMB,Proposal Sent,43,90,60,6,6,4,1
+Finance,Enterprise,New,74,57,23,23,5,5,1
+Manufacturing,Enterprise,New,86,37,21,24,6,4,1
+Retail,Startup,Negotiation,20,41,69,16,6,2,1
+Software,Enterprise,New,25,94,41,6,0,4,0
+IT Services,Enterprise,Qualified,83,95,56,18,4,0,1
+Retail,Enterprise,Contacted,73,30,41,14,0,2,0
+Software,Enterprise,Negotiation,45,73,36,5,11,3,1
+Software,Enterprise,New,25,29,29,11,10,4,1
+Other,SMB,Qualified,85,94,20,8,2,1,0
+Technology,SMB,Qualified,24,20,70,5,9,5,1
+IT Services,SMB,Contacted,57,69,90,11,3,1,1
+Technology,Startup,Contacted,42,26,41,1,4,2,0
+Technology,Enterprise,Qualified,31,90,69,6,3,2,1
+Finance,SMB,Qualified,57,67,70,1,11,3,1
+Education,Startup,Contacted,21,96,66,21,7,0,1
+Software,Enterprise,Qualified,36,90,58,18,5,2,1
+Other,Startup,Qualified,57,23,20,17,10,2,1
+Finance,SMB,Qualified,68,52,93,11,3,1,1
+Manufacturing,Enterprise,Negotiation,54,46,85,4,11,1,1
+Healthcare,Startup,Proposal Sent,76,48,38,1,9,0,0
+Manufacturing,Startup,Negotiation,84,56,50,9,7,5,1
+Healthcare,Startup,Proposal Sent,60,49,64,3,10,1,1
+Software,Startup,Proposal Sent,89,81,54,7,1,0,0
+Education,Enterprise,Proposal Sent,78,33,94,15,2,3,1
+Software,Enterprise,Contacted,38,60,70,2,12,3,1
+Technology,SMB,New,42,59,36,15,10,5,1
+Education,Startup,Negotiation,87,40,66,10,7,1,1
+Other,Startup,Contacted,55,33,34,7,12,1,0
+Technology,SMB,Contacted,36,79,73,9,9,4,1
+Healthcare,Startup,New,42,40,40,13,3,0,0
+Finance,SMB,Contacted,75,93,39,18,9,3,1
+Finance,SMB,Negotiation,98,26,47,23,2,3,1
+Manufacturing,SMB,Contacted,22,33,83,4,6,2,0
+Technology,Enterprise,Proposal Sent,50,78,22,10,3,4,1
+Technology,SMB,New,51,97,49,16,8,2,1
+Retail,SMB,Qualified,32,43,55,12,6,4,1
+Education,Enterprise,New,42,35,73,8,1,1,0
+Other,SMB,Contacted,79,41,60,13,3,5,1
+Technology,SMB,New,80,32,72,14,2,5,1
+Healthcare,SMB,Qualified,65,90,60,4,3,5,1
+Software,Enterprise,Negotiation,73,69,68,15,0,3,1
+IT Services,Startup,Negotiation,39,92,74,23,7,5,1
+Manufacturing,Startup,Qualified,37,24,90,23,11,2,1
+Manufacturing,Startup,New,29,24,82,12,11,2,0
+Healthcare,Enterprise,Contacted,66,22,90,1,1,2,0
+Retail,SMB,Negotiation,89,51,71,22,0,5,1
+Finance,Startup,Qualified,77,22,71,22,2,1,1
+Manufacturing,Enterprise,Proposal Sent,86,86,86,11,9,1,1
+Finance,SMB,Proposal Sent,94,45,42,20,1,5,1
+Technology,Startup,Proposal Sent,81,22,85,11,1,1,0
+Finance,Startup,Proposal Sent,73,71,99,1,12,5,1
+IT Services,Startup,New,74,66,61,15,6,2,1
+Retail,SMB,Negotiation,35,20,74,19,7,5,1
+IT Services,Enterprise,Qualified,57,99,54,23,6,3,1
+Manufacturing,SMB,Negotiation,50,76,89,14,1,4,1
+Manufacturing,SMB,New,57,90,28,5,9,2,0
+Manufacturing,SMB,New,48,43,35,16,4,4,1
+Technology,Startup,Contacted,72,79,43,24,0,1,1
+Manufacturing,SMB,Contacted,92,36,25,6,0,3,0
+Retail,SMB,Negotiation,85,89,84,9,10,2,1
+Finance,SMB,New,55,29,48,15,12,5,1
+Other,Startup,Qualified,99,38,45,24,0,1,1
+Technology,Enterprise,New,77,23,76,24,1,0,1
+Manufacturing,Enterprise,New,97,36,71,2,8,1,0
+Software,Enterprise,Qualified,66,38,25,14,6,5,1
+Finance,SMB,Negotiation,67,47,64,11,4,5,1
+Other,Enterprise,New,49,61,21,19,5,2,1
+Healthcare,Startup,Qualified,92,79,36,9,12,2,1
+Education,SMB,Qualified,59,80,78,2,0,1,0
+Retail,Enterprise,Proposal Sent,66,97,43,22,8,4,1
+Technology,Startup,Qualified,91,31,68,10,11,2,1
+Manufacturing,SMB,Negotiation,79,82,23,11,6,0,1
+Healthcare,SMB,Contacted,86,60,91,7,8,0,1
+Education,Startup,Contacted,77,34,86,22,12,3,1
+Other,Startup,New,58,67,54,23,2,1,1
+Education,Enterprise,New,31,78,23,21,11,1,1
+Education,Enterprise,Contacted,91,97,58,23,6,1,1
+Manufacturing,Enterprise,Negotiation,95,67,67,7,0,2,1
+IT Services,Enterprise,Qualified,72,78,21,10,0,2,1
+Manufacturing,SMB,Contacted,60,74,81,4,1,3,0
+Other,Startup,Proposal Sent,94,34,99,25,2,2,1
+Software,Enterprise,Proposal Sent,80,38,90,24,10,1,1
+Manufacturing,Enterprise,New,46,89,80,16,7,4,1
+Technology,SMB,New,35,56,21,10,5,2,0
+Finance,SMB,Proposal Sent,64,38,32,5,6,3,1
+Healthcare,SMB,Negotiation,88,68,26,20,3,4,1
+Healthcare,Enterprise,Qualified,40,43,32,16,11,4,1
+Education,Enterprise,Negotiation,58,66,67,9,1,1,1
+Healthcare,SMB,Qualified,37,75,58,13,0,3,1
+Healthcare,Startup,New,58,56,81,11,8,1,0
+Technology,Startup,Qualified,20,61,92,20,4,1,1
+Software,SMB,Qualified,66,40,60,7,4,3,1
+Technology,Startup,Proposal Sent,29,46,28,8,9,1,0
+Software,SMB,Negotiation,37,47,69,7,9,2,1
+Education,Enterprise,New,87,49,93,1,11,0,1
+Retail,Startup,Negotiation,90,33,49,25,12,0,1
+IT Services,Enterprise,Negotiation,56,45,32,16,7,4,1
+Education,Enterprise,Qualified,54,96,61,5,1,0,0
+IT Services,SMB,Qualified,38,69,63,6,7,1,0
+Software,Enterprise,New,92,52,66,17,0,3,1
+IT Services,SMB,Proposal Sent,65,20,45,21,0,0,0
+Education,Startup,Contacted,82,34,63,16,7,4,1
+Technology,SMB,Proposal Sent,83,35,64,2,11,2,1
+Software,Startup,Negotiation,80,61,47,16,10,5,1
+Education,Startup,Qualified,67,68,57,17,0,1,1
+Finance,Startup,Negotiation,43,65,43,1,6,4,1
+Manufacturing,Enterprise,Qualified,60,98,23,5,8,0,1
+Healthcare,Enterprise,Negotiation,62,51,97,17,2,2,1
+IT Services,Startup,Contacted,63,51,65,8,0,5,0
+IT Services,SMB,Qualified,73,43,98,1,5,3,1
+Software,Startup,Qualified,25,22,70,2,11,0,0
+Healthcare,Startup,Proposal Sent,73,54,20,5,5,0,0
+Other,Enterprise,New,55,99,31,16,10,0,1
+Technology,SMB,Contacted,55,30,59,2,7,1,0
+Manufacturing,Startup,New,44,80,23,5,4,3,0
+Software,Enterprise,Negotiation,95,88,43,16,0,2,1
+Finance,SMB,New,78,24,53,2,10,1,0
+Manufacturing,Enterprise,Qualified,81,61,25,8,6,0,1
+Finance,SMB,Proposal Sent,84,47,94,16,12,0,1
+Finance,SMB,Qualified,63,64,44,8,6,4,1
+Other,Startup,Qualified,66,42,37,14,1,3,0
+Finance,Enterprise,New,91,39,48,12,0,3,1
+Healthcare,SMB,Contacted,76,98,83,21,8,3,1
+Other,Enterprise,Qualified,78,52,60,4,12,0,1
+IT Services,SMB,New,96,28,86,19,0,0,1
+Other,Startup,Negotiation,89,51,33,2,0,3,0
+IT Services,Startup,Proposal Sent,75,34,47,1,9,4,1
+Other,Enterprise,Negotiation,69,85,83,18,0,3,1
+Education,Enterprise,Negotiation,32,20,40,14,11,5,1
+Software,Enterprise,Negotiation,76,28,74,16,1,5,1
+Manufacturing,SMB,Negotiation,66,72,58,19,2,1,1
+Retail,Enterprise,Contacted,26,67,60,23,10,3,1
+Healthcare,Enterprise,New,70,74,36,3,9,3,1
+Finance,Enterprise,Contacted,35,77,44,1,9,2,0
+Technology,Startup,Qualified,70,96,20,12,1,3,1
+Healthcare,Startup,New,81,81,49,23,6,4,1
+Technology,SMB,Proposal Sent,76,37,44,8,0,2,0
+Finance,Startup,Proposal Sent,56,73,68,17,2,0,1
+Technology,Startup,Negotiation,55,66,70,20,2,4,1
+Healthcare,Enterprise,Proposal Sent,43,74,24,12,9,4,1
+Other,SMB,Proposal Sent,25,60,43,21,11,1,1
+IT Services,SMB,Contacted,54,73,40,25,4,1,1
+Retail,Startup,Proposal Sent,92,80,48,15,0,5,1
+Finance,Enterprise,Negotiation,80,53,24,3,10,5,1
+Manufacturing,SMB,Qualified,24,46,86,15,10,0,1
+Education,Startup,New,70,41,68,7,2,5,0
+Education,SMB,Qualified,49,66,68,17,8,5,1
+Software,SMB,Contacted,35,30,72,23,4,4,1
+Manufacturing,Enterprise,New,53,98,86,4,2,5,1
+Retail,Startup,Negotiation,78,89,22,7,2,4,1
+Software,SMB,Contacted,57,57,61,17,10,0,1
+IT Services,Startup,Contacted,43,50,46,24,1,0,0
+Manufacturing,Startup,Qualified,24,55,35,14,1,2,0
+Technology,Enterprise,Negotiation,28,40,98,22,11,0,1
+IT Services,SMB,Proposal Sent,94,63,83,23,2,2,1
+Finance,Enterprise,Contacted,64,26,48,10,4,4,1
+Manufacturing,Startup,Contacted,33,70,33,15,12,3,1
+Healthcare,Startup,Contacted,77,38,93,7,12,2,1
+Healthcare,SMB,Proposal Sent,37,77,69,24,8,0,1
+Technology,Startup,Proposal Sent,80,22,62,14,2,2,1
+Retail,Startup,Qualified,31,61,53,7,9,1,0
+Software,Enterprise,Qualified,86,33,28,23,6,1,1
+Education,Enterprise,Negotiation,20,20,75,6,9,4,1
+Healthcare,Enterprise,Qualified,69,37,27,23,11,2,1
+Software,Enterprise,New,54,43,97,20,12,1,1
+Healthcare,Startup,New,30,36,42,12,3,5,0
+IT Services,SMB,Proposal Sent,60,59,53,17,2,4,1
+IT Services,Startup,New,54,91,97,8,4,2,0
+Software,SMB,Contacted,84,64,46,1,12,2,1
+Technology,SMB,Negotiation,27,61,59,17,5,2,1
+Education,Enterprise,Negotiation,37,80,53,15,7,2,1
+Retail,SMB,Proposal Sent,47,60,52,4,1,1,0
