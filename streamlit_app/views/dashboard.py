@@ -1,5 +1,7 @@
 import streamlit as st
 import requests
+import plotly.express as px
+import pandas as pd
 
 from components.header import show_header
 from components.stat_cards import show_stat_cards
@@ -19,7 +21,7 @@ def get_leads():
 def show_dashboard():
 
     leads = get_leads()
-
+    df = pd.DataFrame(leads)
     total_leads = len(leads)
     hot_leads = len([lead for lead in leads if lead.get("status") == "Hot"])
     warm_leads = len([lead for lead in leads if lead.get("status") == "Warm"])
@@ -43,5 +45,66 @@ def show_dashboard():
     with left:
         show_welcome()
 
-    with right:
-        show_recent_activity()
+    if not df.empty:
+
+        st.markdown("### 📊 Sales Analytics")
+
+        chart1, chart2 = st.columns(2)
+
+        # Pie Chart - Lead Status
+        with chart1:
+            status_counts = df["status"].value_counts().reset_index()
+            status_counts.columns = ["Status", "Count"]
+
+            fig = px.pie(
+                status_counts,
+                values="Count",
+                names="Status",
+                title="Lead Status Distribution",
+                hole=0.45,
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+
+        # Bar Chart - Lead Scores
+        with chart2:
+            fig = px.histogram(
+                df,
+                x="score",
+                nbins=10,
+                title="Lead Score Distribution",
+            )
+            fig.update_yaxes(
+                tickmode="linear",
+                dtick=1,
+                tickformat="d"
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+
+        st.markdown("---")
+
+        # Company-wise Leads
+        company_counts = (
+            df["company"]
+            .value_counts()
+            .head(10)
+            .reset_index()
+        )
+
+        company_counts.columns = ["Company", "Leads"]
+
+        fig = px.bar(
+            company_counts,
+            x="Leads",
+            y="Company",
+            orientation="h",
+            title="Top Companies"
+        )
+        fig.update_xaxes(
+            tickmode="linear",
+            dtick=1,
+            tickformat="d"
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
