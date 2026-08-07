@@ -63,7 +63,9 @@ Return ONLY valid JSON in this exact format:
 
 Do not include markdown.
 Do not explain your reasoning outside the JSON.
+While evaluating Business Fit, consider the detected technology stack.
 
+If the company uses technologies like AWS, Azure, Docker, Kubernetes, React, Node.js, Python, Java, PostgreSQL, MongoDB or other modern cloud technologies, increase the Business Fit score appropriately.
 Lead Information:
 
 {lead}
