@@ -3,13 +3,14 @@ import pandas as pd
 import plotly.express as px
 import sys
 import os
+import json
 
 sys.path.append(
     os.path.abspath(
         os.path.join(os.path.dirname(__file__), "..", "..")
     )
 )
-from ai.ai_analysis import analyze_lead
+from ai.ai_analysis import analyze_lead, build_lead_analysis
 from views.ai_panel import show_ai_analysis
 # ==========================================================
 # SAMPLE DATA
@@ -247,6 +248,13 @@ def edit_prospect_dialog(p):
 
             if response.status_code == 200:
                 st.success("Lead updated successfully!")
+                requests.post(
+                    "http://127.0.0.1:8000/activity/add",
+                    json={
+                        "lead_id": p["id"],
+                        "activity": "Lead details updated"
+                    }
+                )
                 st.rerun()
             else:
                 st.error("Update failed.")
@@ -267,7 +275,12 @@ def show_leads():
     except Exception as e:
         st.error(f"Backend not running: {e}")
         prospects = [] 
-        
+    if "outreach_emails" not in st.session_state:
+        st.session_state.outreach_emails = {}
+    if "lead_scores" not in st.session_state:
+        st.session_state.lead_scores = {}
+    if "activities" not in st.session_state:
+        st.session_state.activities = {}
        # ==========================================================
 # PROSPECT DETAILS PAGE
 # ==========================================================
@@ -319,16 +332,16 @@ def show_leads():
 
         st.divider()
 
-        overview, ai, activity, notes = st.tabs(
+        overview, ai, outreach, scoring, conversation,activity, notes = st.tabs(
 
             [
 
                 "🏢 Overview",
-
                 "🤖 AI Insights",
-
+                "📧 AI Outreach",
+                "🎯 AI Lead Score",
+                "💬 Conversation Intelligence",
                 "📅 Activity",
-
                 "📝 Notes"
 
             ]
@@ -379,24 +392,333 @@ def show_leads():
 
                 st.write("**📞 Phone**")
                 st.write(p["phone"])
-
+            
         # ======================================================
 
         with ai:
-
             show_ai_analysis(p)
+            
         # ======================================================
+        with outreach:
 
+            st.subheader("📧 AI Outreach")
+
+            lead_id = p["id"]
+
+            if lead_id not in st.session_state.outreach_emails:
+
+                st.info("Generate a personalized outreach email for this lead.")
+
+                if st.button(
+                    "🚀 Generate Outreach Email",
+                    key=f"generate_{lead_id}",
+                    type="primary",
+                    use_container_width=True,
+                ):
+
+                    with st.spinner("🔍 Analyzing lead..."):
+                        analysis = build_lead_analysis(p)
+
+                    with st.spinner("✍️ Generating personalized email..."):
+
+                        response = requests.post(
+                            "http://127.0.0.1:8000/outreach/generate",
+                            json={
+                                "name": p["contact"],
+                                "company": p["company"],
+                                "industry": p["industry"],
+                                "status": p["status"],
+                                "score": analysis["lead_score"],
+                                "analysis": json.dumps(analysis, indent=2),
+                            },
+                        )
+
+                    if response.status_code == 200:
+
+                        st.session_state.outreach_emails[lead_id] = {
+                            "email": response.json(),
+                            "analysis": analysis,
+                        }
+                        if lead_id not in st.session_state.activities:
+                            st.session_state.activities[lead_id] = []
+
+                        activity = {
+                            "icon": "📧",
+                            "title": "Personalized Outreach Generated"
+                        }
+
+                        if activity not in st.session_state.activities[lead_id]:
+                            st.session_state.activities[lead_id].append(activity)
+                        st.rerun()
+
+                    else:
+                        st.error("Unable to generate outreach email.")
+
+            else:
+
+                data = st.session_state.outreach_emails[lead_id]
+
+                email = data["email"]
+                analysis = data["analysis"]
+                st.subheader("🎯 Recommended Tone")
+                st.info(email["tone"])
+                st.subheader("📧 Subject")
+                st.info(email["subject"])
+                edited_email = st.text_area(
+                    "✉️ Personalized Email",
+                    value=email["message"],
+                    height=320,
+                    key=f"email_editor_{lead_id}"
+                )
+                save_col, regen_col = st.columns(2)
+
+                with save_col:
+
+                    if st.button(
+                        "💾 Save Changes",
+                        key=f"save_{lead_id}",
+                        use_container_width=True,
+                    ):
+
+                        st.session_state.outreach_emails[lead_id]["email"]["message"] = edited_email
+
+                        st.success("Email updated successfully!")
+                with regen_col:
+
+                    if st.button(
+                        "🔄 Regenerate Email",
+                        key=f"regen_{lead_id}",
+                        use_container_width=True,
+                    ):
+                        with st.spinner("Generating a fresh version..."):
+                        
+                            response = requests.post(
+                                "http://127.0.0.1:8000/outreach/generate",
+                                json={
+                                    "name": p["contact"],
+                                    "company": p["company"],
+                                    "industry": p["industry"],
+                                    "status": p["status"],
+                                    "score": analysis["lead_score"],
+                                    "analysis": json.dumps(analysis, indent=2),
+                                },
+                            )
+                        
+                        if response.status_code == 200:
+                        
+                            st.session_state.outreach_emails[lead_id]["email"] = response.json()
+                                                
+                            st.rerun()
+
+                st.subheader("💡 Talking Points")
+
+                for point in email["talking_points"]:
+                    st.success(point)
+
+
+        with scoring:
+
+            st.subheader("🎯 AI Lead Scoring")
+
+            lead_id = p["id"]
+
+            if lead_id not in st.session_state.lead_scores:
+
+                st.info("Generate an AI-powered lead score and recommendations.")
+
+                if st.button(
+                    "🚀 Predict Lead Score",
+                    key=f"score_{lead_id}",
+                    type="primary",
+                    use_container_width=True,
+                ):
+                    with st.spinner("🤖 AI is evaluating this lead..."):
+
+                        analysis = build_lead_analysis(p)
+
+                        response = requests.post(
+                            "http://127.0.0.1:8000/score/predict",
+                            json={
+                                "name": p["contact"],
+                                "company": p["company"],
+                                "industry": p["industry"],
+                                "status": p["status"],
+                                "notes": p["notes"],
+                                "analysis": json.dumps(analysis, indent=2)
+                            }
+                        )
+
+                    if response.status_code == 200:
+
+                        st.session_state.lead_scores[lead_id] = response.json()
+                        if lead_id not in st.session_state.activities:
+                            st.session_state.activities[lead_id] = []
+
+                        activity = {
+                            "icon": "🎯",
+                            "title": "AI Lead Score Generated"
+                        }
+
+                        if activity not in st.session_state.activities[lead_id]:
+                            st.session_state.activities[lead_id].append(activity)
+                        st.rerun()
+
+                    else:
+
+                        st.error("Unable to generate AI Lead Score.")
+            else:
+
+                score = st.session_state.lead_scores[lead_id]
+
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    st.metric(
+                        "🎯 Lead Score",
+                        f"{score['lead_score']}/100"
+                    )
+                    st.caption(f"AI Confidence Score: {score['lead_score']}/100")
+                    st.progress(score["lead_score"] / 100)
+
+                with col2:
+                    st.metric(
+                        "📈 Conversion Probability",
+                        f"{score['conversion_probability']}%"
+                    )
+                    priority = score["priority"]
+
+                    if priority == "High":
+                        st.success(f"🟢 Priority: {priority}")
+                    elif priority == "Medium":
+                        st.warning(f"🟡 Priority: {priority}")
+                    else:
+                        st.error(f"🔴 Priority: {priority}")
+                    if "confidence" in score:
+                        st.info(f"Confidence: {score['confidence']}")
+                st.divider()
+
+                st.subheader("🚀 Next Best Action")
+                st.info(score["next_best_action"])
+
+                st.subheader("📝 AI Reasoning")
+                st.write(score["reason"])
+        with conversation:
+            st.subheader("💬 Conversation Intelligence")
+
+            transcript = st.text_area(
+                "Paste Meeting / Call Transcript",
+                height=250,
+                placeholder="Paste Zoom, Teams, Email or Sales Call transcript...",
+                key=f"conversation_input_{p['id']}"
+            )
+            if st.button(
+                "🚀 Analyze Conversation",
+                key=f"conversation_{p['id']}",
+                use_container_width=True
+            ):
+                st.write("Button clicked!")
+                response = requests.post(
+                    "http://127.0.0.1:8000/conversation/analyze",
+                    json={
+                        "lead_id": p["id"],
+                        "transcript": transcript
+                    }
+                )
+
+                if response.status_code == 200:
+
+                    st.session_state[f"conversation_analysis_{p['id']}"] = {
+                        "transcript": transcript,
+                        "analysis": response.json()
+                    }
+
+                    if p["id"] not in st.session_state.activities:
+                        st.session_state.activities[p["id"]] = []
+
+                    activity_log = {
+                        "icon": "💬",
+                        "title": "Conversation analyzed with AI"
+                    }
+
+                    if activity_log not in st.session_state.activities[p["id"]]:
+                        st.session_state.activities[p["id"]].append(activity_log)
+
+                    st.rerun()
+
+                else:
+                    st.error("Unable to analyze conversation.")
+            if f"conversation_analysis_{p['id']}" in st.session_state:
+
+                data = st.session_state[f"conversation_analysis_{p['id']}"]["analysis"]
+
+                st.divider()
+
+                st.subheader("📄 Meeting Summary")
+                
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    st.metric("😊 Sentiment", data["sentiment"])
+
+                with col2:
+                    st.metric("🔥 Buying Intent", data["buying_intent"])
+
+                st.subheader("⚠️ Pain Points")
+
+                for point in data["pain_points"]:
+                    st.write(f"• {point}")
+
+                st.subheader("❌ Objections")
+
+                for obj in data["objections"]:
+                    st.write(f"• {obj}")
+
+                st.subheader("➡️ Next Actions")
+
+                for action in data["next_actions"]:
+                    st.success(action)
+
+                st.subheader("📝 CRM Notes")
+                st.write(data["crm_notes"])
+                if st.button(
+                    "💾 Save to CRM",
+                    key=f"save_conversation_{p['id']}",
+                    use_container_width=True
+                ):
+
+                    requests.post(
+                        "http://127.0.0.1:8000/conversation/save",
+                        json={
+                            "lead_id": p["id"],
+                            "transcript": st.session_state[f"conversation_analysis_{p['id']}"]["transcript"],
+                            "summary": data["summary"],
+                            "sentiment": data["sentiment"],
+                            "buying_intent": data["buying_intent"],
+                            "next_action": "\n".join(data["next_actions"]),
+                            "crm_notes": data["crm_notes"]
+                        }
+                    )
+
+                    st.success("✅ Conversation saved successfully!")
+
+                    activity_log = {
+                        "icon": "💾",
+                        "title": "Conversation saved to CRM"
+                    }
+
+                    if activity_log not in st.session_state.activities[p["id"]]:
+                        st.session_state.activities[p["id"]].append(activity_log)
         with activity:
 
             st.markdown("### 📅 Activity Timeline")
 
-            st.success("✅ Prospect Created")
+            activities = st.session_state.activities.get(p["id"], [])
 
-            st.info("📧 Outreach Email Sent")
+            if not activities:
+                st.info("No activities yet.")
 
-            st.warning("⏳ Awaiting Response")
-
+            for activity in activities:
+                st.write(f"{activity['icon']}  {activity['title']}")
             st.markdown("---")
 
             st.write("Upcoming Task")
@@ -419,7 +741,7 @@ def show_leads():
 
             )
 
-        return
+            return
         st.title("👥 Leads & Prospects")
 
         st.caption(
@@ -437,18 +759,25 @@ def show_leads():
     # SEARCH + ACTION BAR
     # ==========================================================
 
-    left, right = st.columns([5,1])
+    left, middle, right = st.columns([5,2,2])
 
     with left:
 
         search = st.text_input(
-            "",
-            placeholder="🔍 Search company..."
+            "Search",
+            placeholder="🔍 Search company...",
+            label_visibility="collapsed"
         )
 
-    with right:
+    with middle:
 
-        st.write("")
+        uploaded_file = st.file_uploader(
+        "Import CSV",
+        type=["csv"],
+        label_visibility="collapsed"
+    )
+
+    with right:
 
         if st.button(
             "➕ Add Prospect",
@@ -457,6 +786,30 @@ def show_leads():
         ):
             st.session_state.show_form = True
 
+    if uploaded_file is not None:
+    
+            files = {
+                "file": (
+                    uploaded_file.name,
+                    uploaded_file.getvalue(),
+                    "text/csv"
+                )
+            }
+    
+            response = requests.post(
+                "http://127.0.0.1:8000/leads/import",
+                files=files
+            )
+    
+            if response.status_code == 200:
+                st.success(response.json()["message"])
+                st.rerun()
+            else:
+                st.error("CSV Import Failed")
+        
+
+
+    
 
     st.divider()
 
