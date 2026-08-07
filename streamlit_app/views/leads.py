@@ -13,7 +13,7 @@ sys.path.append(
 from ai.ai_analysis import analyze_lead, build_lead_analysis
 from views.ai_panel import show_ai_analysis
 # ==========================================================
-# SAMPLE DATA
+
 # ==========================================================
 
 import requests
