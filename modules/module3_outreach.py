@@ -1,10 +1,26 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-router = APIRouter(prefix="/outreach", tags=["Outreach"])
 import os
+import json
+
 from dotenv import load_dotenv
 from openai import OpenAI
+
+
+# ============================================================
+# ROUTER
+# ============================================================
+
+router = APIRouter(
+    prefix="/outreach",
+    tags=["Outreach"]
+)
+
+
+# ============================================================
+# GROQ CLIENT
+# ============================================================
 
 load_dotenv()
 
@@ -13,7 +29,13 @@ client = OpenAI(
     base_url="https://api.groq.com/openai/v1"
 )
 
-MODEL = "llama-3.3-70b-versatile"
+# Faster model for Outreach Generation
+MODEL = "openai/gpt-oss-20b"
+
+# ============================================================
+# INDUSTRY-SPECIFIC GUIDANCE
+# ============================================================
+
 INDUSTRY_PROMPTS = {
 
     "technology": """
@@ -70,7 +92,14 @@ Focus on:
 - Cloud infrastructure
 """
 }
+
+
+# ============================================================
+# REQUEST MODEL
+# ============================================================
+
 class OutreachRequest(BaseModel):
+
     name: str
     company: str
     industry: str
@@ -79,106 +108,151 @@ class OutreachRequest(BaseModel):
     analysis: str = ""
     score: int = 0
 
+
+# ============================================================
+# OUTREACH GENERATION
+# ============================================================
+
 @router.post("/generate")
 def generate_outreach(data: OutreachRequest):
+
     industry_prompt = INDUSTRY_PROMPTS.get(
         data.industry.lower(),
         """
-    Focus on:
-    - Business growth
-    - Operational efficiency
-    - Digital transformation
-    """
+Focus on:
+- Business growth
+- Operational efficiency
+- Digital transformation
+"""
     )
+
+    # --------------------------------------------------------
+    # PROMPT
+    # --------------------------------------------------------
+
     prompt = f"""
-        You are an experienced Enterprise Sales Consultant at Infosys.
+You are an Enterprise Sales Consultant at Infosys.
 
-        Your task is to generate a highly personalized outreach package for a potential client based on the AI lead analysis.
+Create a highly personalized B2B outreach email for the lead below.
 
-        Lead Details
+Lead Information:
 
-        Company: {data.company}
+Company: {data.company}
+Contact Person: {data.name}
+Industry: {data.industry}
+Lead Status: {data.status}
+Lead Score: {data.score}
 
-        Contact Person: {data.name}
+Industry Guidance:
+{industry_prompt}
 
-        Industry: {data.industry}
-        Industry-Specific Guidance:
-        {industry_prompt}
-        Lead Status: {data.status}
+AI Lead Analysis:
+{data.analysis}
 
-        Lead Score:
-        {data.score}
+Requirements:
 
-        AI Lead Analysis:
-        {data.analysis}
-        Important Instructions:
+- Personalize the email specifically for the company.
+- Use the business opportunities and technology needs identified
+  in the AI Lead Analysis.
+- Explain briefly how Infosys can help.
+- Keep the tone professional and consultative.
+- Avoid generic sales language.
+- Do not invent facts that are not present in the lead analysis.
+- Keep the email between 100 and 130 words.
+- Include a greeting.
+- Use 3 short paragraphs.
+- End with a clear request for a short meeting.
+- End with:
 
-        - Base the outreach primarily on the AI Lead Analysis.
-        - Mention business opportunities identified in the analysis.
-        - Use the industry guidance above to tailor the email.
-        - Avoid generic templates.
-        - Make the email unique for this company.
-        Instructions:
+Best Regards,
+Infosys Sales Team
 
-        - Carefully analyze the lead information and AI analysis before writing.
-        - Personalize the email specifically for this company.
-        - Mention challenges or opportunities identified in the AI analysis whenever appropriate.
-        - Explain how Infosys can help solve those business challenges.
-        - Keep the email professional, consultative, and concise.
-        - Avoid generic sales language or exaggerated marketing claims.
-        - End the email with a clear call-to-action requesting a short meeting.
-       
-        Email Formatting Requirements:
+Do not generate talking points.
 
-        - Begin with a greeting (e.g., Dear Rahul,).
-        - Leave one blank line after the greeting.
-        - Split the email into 3–4 short paragraphs.
-        - Each paragraph should contain 2–3 sentences.
-        - End with a professional closing such as:
+Return ONLY valid JSON with exactly these fields:
 
-        Best Regards,
-        Infosys Sales Team
-        Return valid JSON only.
-        In the "message" field, represent line breaks using escaped newline characters (\\n), not literal line breaks.
-        Generate:
+{{
+    "tone": "...",
+    "subject": "...",
+    "message": "..."
+}}
 
-        1. A suitable outreach tone.
-        2. A compelling email subject.
-        3. A personalized outreach email (150–200 words).
-        4. Four concise talking points that a sales representative can use during the meeting.
+The message must use \\n for line breaks.
 
-        Return ONLY valid JSON in the following format:
+Do not include markdown.
+Do not include explanations.
+Do not include any additional fields.
+"""
 
-        {{
-            "tone": "...",
-            "subject": "...",
-            "message": "...",
-            "talking_points": [
-                "...",
-                "...",
-                "...",
-                "..."
-            ]
-        }}
 
-        Do not include markdown.
-        Do not include explanations.
-        Return only valid JSON.
-        """
+    # --------------------------------------------------------
+    # LLM CALL
+    # --------------------------------------------------------
+
 
     response = client.chat.completions.create(
         model=MODEL,
         messages=[
             {
+                "role": "system",
+                "content": (
+                    "You are an enterprise B2B sales email generator. "
+                    "Generate concise personalized sales emails."
+                )
+            },
+            {
                 "role": "user",
                 "content": prompt
             }
         ],
-        temperature=0.7,
+        temperature=0.2,
+        max_tokens=500,
+        reasoning_effort="low",
         response_format={"type": "json_object"}
     )
-    content = response.choices[0].message.content
 
-    import json
+    content = (
+        response.choices[0].message.content or ""
+    ).strip()
 
-    return json.loads(content)
+    if not content:
+        raise ValueError(
+            "M3 returned an empty response. "
+            f"finish_reason={response.choices[0].finish_reason}"
+        )
+
+    try:
+        result = json.loads(content)
+
+    except json.JSONDecodeError:
+
+        start = content.find("{")
+        end = content.rfind("}")
+
+        if start == -1 or end == -1:
+            raise ValueError(
+                f"M3 returned invalid JSON: {content}"
+            )
+
+        result = json.loads(
+            content[start:end + 1]
+        )
+
+    required_fields = [
+        "tone",
+        "subject",
+        "message"
+    ]
+
+    for field in required_fields:
+
+        if field not in result:
+            raise ValueError(
+                f"M3 response missing field: {field}"
+            )
+
+    return {
+        "tone": result["tone"],
+        "subject": result["subject"],
+        "message": result["message"]
+    }
