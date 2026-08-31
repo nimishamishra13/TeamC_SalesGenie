@@ -4,7 +4,10 @@ import plotly.express as px
 import sys
 import os
 import json
+import csv
+import io
 
+from fastapi import UploadFile, File
 sys.path.append(
     os.path.abspath(
         os.path.join(os.path.dirname(__file__), "..", "..")
@@ -13,13 +16,13 @@ sys.path.append(
 from ai.ai_analysis import analyze_lead, build_lead_analysis
 from views.ai_panel import show_ai_analysis
 # ==========================================================
-
+# SAMPLE DATA
 # ==========================================================
 
 import requests
 
 try:
-    response = requests.get("http://127.0.0.1:8000/leads")
+    response = requests.get("http://127.0.0.1:8000/leads/")
     response.raise_for_status()
     prospects = response.json()
 except Exception as e:
@@ -65,19 +68,50 @@ def status_badge(status):
 # KPI DASHBOARD
 # ==========================================================
 
+# KPI DASHBOARD
+# ==========================================================
+
 def dashboard_cards(prospects):
 
     total = len(prospects)
 
-    hot = len([p for p in prospects if p["status"]=="Hot"])
+    # Make sure session state exists
+    if "lead_scores" not in st.session_state:
+        st.session_state.lead_scores = {}
 
-    warm = len([p for p in prospects if p["status"]=="Warm"])
+    # Get only leads that have an AI score
+    scored_leads = [
+        p for p in prospects
+        if p["id"] in st.session_state.lead_scores
+    ]
 
-    avg = int(
-        sum(p["score"] for p in prospects)/len(prospects)
+    # Calculate AI status from AI score
+    hot = 0
+    warm = 0
+
+    for p in scored_leads:
+
+        score = st.session_state.lead_scores[p["id"]]["lead_score"]
+
+        if score >= 90:
+            hot += 1
+
+        elif score >= 75:
+            warm += 1
+
+    # Average AI score
+    ai_scores = [
+        st.session_state.lead_scores[p["id"]]["lead_score"]
+        for p in scored_leads
+    ]
+
+    avg = (
+        int(sum(ai_scores) / len(ai_scores))
+        if ai_scores
+        else 0
     )
 
-    c1,c2,c3,c4 = st.columns(4)
+    c1, c2, c3, c4 = st.columns(4)
 
     with c1:
         st.metric(
@@ -99,11 +133,9 @@ def dashboard_cards(prospects):
 
     with c4:
         st.metric(
-            "⭐ Avg Score",
+            "⭐ Avg AI Score",
             f"{avg}/100"
         )
-
-
 # ==========================================================
 # CHARTS
 # ==========================================================
@@ -210,26 +242,154 @@ def show_charts(prospects):
 @st.dialog("✏️ Edit Prospect")
 def edit_prospect_dialog(p):
 
-    company = st.text_input("🏢 Company", value=p["company"])
-    industry = st.text_input("🏭 Industry", value=p["industry"])
-    location = st.text_input("📍 Location", value=p["location"])
-    website = st.text_input("🌐 Website", value=p["website"])
-
-    contact = st.text_input("👤 Contact", value=p["contact"])
-    designation = st.text_input("💼 Designation", value=p["designation"])
-    email = st.text_input("📧 Email", value=p["email"])
-    phone = st.text_input("📞 Phone", value=p["phone"])
-
-    notes = st.text_area(
-        "📝 Notes",
-        value=p["notes"],
-        height=120
-    )
+    # ============================================================
+    # BASIC PROSPECT INFORMATION
+    # ============================================================
 
     col1, col2 = st.columns(2)
 
     with col1:
-        if st.button("💾 Save Changes", use_container_width=True):
+
+        company = st.text_input(
+            "🏢 Company",
+            value=p.get("company", "")
+        )
+
+        industry = st.selectbox(
+            "🏭 Industry",
+            [
+                "Technology",
+                "Finance",
+                "Healthcare",
+                "Education",
+                "Retail",
+                "Manufacturing",
+                "IT Services",
+                "Software",
+                "Other"
+            ],
+            index=(
+                [
+                    "Technology",
+                    "Finance",
+                    "Healthcare",
+                    "Education",
+                    "Retail",
+                    "Manufacturing",
+                    "IT Services",
+                    "Software",
+                    "Other"
+                ].index(p.get("industry"))
+                if p.get("industry") in [
+                    "Technology",
+                    "Finance",
+                    "Healthcare",
+                    "Education",
+                    "Retail",
+                    "Manufacturing",
+                    "IT Services",
+                    "Software",
+                    "Other"
+                ]
+                else 0
+            )
+        )
+
+        location = st.text_input(
+            "📍 Location",
+            value=p.get("location", "")
+        )
+
+        website = st.text_input(
+            "🌐 Website",
+            value=p.get("website", "")
+        )
+
+    with col2:
+
+        contact = st.text_input(
+            "👤 Contact",
+            value=p.get("contact", "")
+        )
+
+        designation = st.text_input(
+            "💼 Designation",
+            value=p.get("designation", "")
+        )
+
+        email = st.text_input(
+            "📧 Email",
+            value=p.get("email", "")
+        )
+
+        phone = st.text_input(
+            "📞 Phone",
+            value=p.get("phone", "")
+        )
+
+    # ============================================================
+    # SALES / PIPELINE INFORMATION
+    # ============================================================
+
+    st.markdown("### 💼 Sales & Pipeline Information")
+
+    pipeline_col1, pipeline_col2 = st.columns(2)
+
+    with pipeline_col1:
+
+        deal_value = st.number_input(
+            "💰 Pipeline Value",
+            min_value=0.0,
+            value=float(p.get("deal_value") or 0),
+            step=1000.0,
+            help="Estimated value of the potential deal."
+        )
+
+    with pipeline_col2:
+
+        pipeline_statuses = [
+            "New",
+            "Qualified",
+            "Contacted",
+            "Proposal",
+            "Negotiation",
+            "Won",
+            "Lost"
+        ]
+
+        current_status = p.get("status", "New")
+
+        if current_status not in pipeline_statuses:
+            current_status = "New"
+
+        pipeline_status = st.selectbox(
+            "📊 Pipeline Status",
+            pipeline_statuses,
+            index=pipeline_statuses.index(current_status)
+        )
+
+    # ============================================================
+    # NOTES
+    # ============================================================
+
+    notes = st.text_area(
+        "📝 Notes",
+        value=p.get("notes", ""),
+        height=120
+    )
+
+    # ============================================================
+    # ACTION BUTTONS
+    # ============================================================
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        if st.button(
+            "💾 Save Changes",
+            use_container_width=True
+        ):
 
             response = requests.put(
                 f"http://127.0.0.1:8000/leads/{p['id']}",
@@ -242,12 +402,24 @@ def edit_prospect_dialog(p):
                     "website": website,
                     "location": location,
                     "industry": industry,
-                    "notes": notes
+                    "notes": notes,
+
+                    # Sales / Pipeline fields
+                    "deal_value": deal_value,
+                    "status": pipeline_status
                 }
             )
 
+            print("🔥 EDIT PROSPECT RESPONSE:")
+            print(response.status_code)
+            print(response.text)
+
             if response.status_code == 200:
-                st.success("Lead updated successfully!")
+
+                st.success(
+                    "✅ Lead updated successfully!"
+                )
+
                 requests.post(
                     "http://127.0.0.1:8000/activity/add",
                     json={
@@ -255,21 +427,37 @@ def edit_prospect_dialog(p):
                         "activity": "Lead details updated"
                     }
                 )
+
+                # Clear cached prospect data
+                st.session_state.pop(
+                    "prospects",
+                    None
+                )
+
                 st.rerun()
+
             else:
-                st.error("Update failed.")
+
+                st.error(
+                    f"Update failed.\n\n"
+                    f"{response.text}"
+                )
 
     with col2:
-        if st.button("Cancel", use_container_width=True):
-            st.rerun()
 
+        if st.button(
+            "❌ Cancel",
+            use_container_width=True
+        ):
+
+            st.rerun()
 # ==========================================================
 # MAIN PAGE
 # ==========================================================
 
 def show_leads():
     try:
-        response = requests.get("http://127.0.0.1:8000/leads")
+        response = requests.get("http://127.0.0.1:8000/leads/")
         response.raise_for_status()
         prospects = response.json()
     except Exception as e:
@@ -303,31 +491,58 @@ def show_leads():
 
         with c1:
 
-            st.metric(
-                "⭐ Lead Score",
-                f"{p['score']}/100"
-            )
+            ai_score = None
 
-            st.progress(
-                p["score"]/100
-            )
+            if "lead_scores" in st.session_state:
+                ai_score = p.get("score")
+
+            if ai_score is not None:
+
+                st.metric(
+                    "⭐ AI Lead Score",
+                    f"{ai_score}/100"
+                )
+
+                st.progress(ai_score / 100)
+
+            else:
+
+                st.metric(
+                    "⭐ AI Lead Score",
+                    "Not calculated"
+                )
+
 
         with c2:
 
+            if ai_score is None:
+                ai_status = "Not Scored"
+            elif ai_score >= 75:
+                ai_status = "Hot"
+            elif ai_score >= 50:
+                ai_status = "Warm"
+            else:
+                ai_status = "Cold"
+
             st.metric(
-                "Status",
-                p["status"]
+                "AI Status",
+                ai_status
             )
-
-            status_badge(
-                p["status"]
-            )
-
+            
         with c3:
+
+            if ai_score is None:
+                priority = "Not calculated"
+            elif ai_score >= 75:
+                priority = "High"
+            elif ai_score >= 50:
+                priority = "Medium"
+            else:
+                priority = "Low"
 
             st.metric(
                 "Priority",
-                "High" if p["score"] >= 90 else "Medium"
+                priority
             )
 
         st.divider()
@@ -428,10 +643,11 @@ def show_leads():
                                 "company": p["company"],
                                 "industry": p["industry"],
                                 "status": p["status"],
-                                "score": analysis["lead_score"],
                                 "analysis": json.dumps(analysis, indent=2),
                             },
                         )
+                        print("🔥 OUTREACH STATUS:", response.status_code)
+                        print("🔥 OUTREACH RESPONSE:", response.text)
 
                     if response.status_code == 200:
 
@@ -499,10 +715,11 @@ def show_leads():
                                     "company": p["company"],
                                     "industry": p["industry"],
                                     "status": p["status"],
-                                    "score": analysis["lead_score"],
                                     "analysis": json.dumps(analysis, indent=2),
                                 },
                             )
+                            print("🔥 OUTREACH STATUS:", response.status_code)
+                            print("🔥 OUTREACH RESPONSE:", response.text)
                         
                         if response.status_code == 200:
                         
@@ -510,10 +727,7 @@ def show_leads():
                                                 
                             st.rerun()
 
-                st.subheader("💡 Talking Points")
-
-                for point in email["talking_points"]:
-                    st.success(point)
+                
 
 
         with scoring:
@@ -522,7 +736,7 @@ def show_leads():
 
             lead_id = p["id"]
 
-            if lead_id not in st.session_state.lead_scores:
+            if p.get("score") is None:
 
                 st.info("Generate an AI-powered lead score and recommendations.")
 
@@ -539,9 +753,12 @@ def show_leads():
                         response = requests.post(
                             "http://127.0.0.1:8000/score/predict",
                             json={
+                                "lead_id": p["id"],
                                 "name": p["contact"],
                                 "company": p["company"],
                                 "industry": p["industry"],
+                                "designation": p["designation"],
+                                "website": p["website"],
                                 "status": p["status"],
                                 "notes": p["notes"],
                                 "analysis": json.dumps(analysis, indent=2)
@@ -549,7 +766,7 @@ def show_leads():
                         )
 
                     if response.status_code == 200:
-
+                        print("🔥 SCORE RESPONSE:", response.json())
                         st.session_state.lead_scores[lead_id] = response.json()
                         if lead_id not in st.session_state.activities:
                             st.session_state.activities[lead_id] = []
@@ -568,40 +785,166 @@ def show_leads():
                         st.error("Unable to generate AI Lead Score.")
             else:
 
-                score = st.session_state.lead_scores[lead_id]
+                lead_score = p.get("score")
 
+                if lead_score is None:
+                    st.warning("Lead score is not available.")
+                    return
                 col1, col2 = st.columns(2)
 
                 with col1:
                     st.metric(
                         "🎯 Lead Score",
-                        f"{score['lead_score']}/100"
+                        f"{lead_score}/100"
                     )
-                    st.caption(f"AI Confidence Score: {score['lead_score']}/100")
-                    st.progress(score["lead_score"] / 100)
+                    st.caption(f"AI Confidence Score: {lead_score}/100")
+                    st.progress(lead_score / 100)
 
                 with col2:
-                    st.metric(
-                        "📈 Conversion Probability",
-                        f"{score['conversion_probability']}%"
-                    )
-                    priority = score["priority"]
+                    if lead_score >= 75:
+                        priority = "High"
+                    elif lead_score >= 50:
+                        priority = "Medium"
+                    else:
+                        priority = "Low"
 
                     if priority == "High":
                         st.success(f"🟢 Priority: {priority}")
+
                     elif priority == "Medium":
                         st.warning(f"🟡 Priority: {priority}")
+
                     else:
                         st.error(f"🔴 Priority: {priority}")
-                    if "confidence" in score:
-                        st.info(f"Confidence: {score['confidence']}")
                 st.divider()
 
                 st.subheader("🚀 Next Best Action")
-                st.info(score["next_best_action"])
+
+                st.info(
+                    "Prioritize this lead based on its current AI score and "
+                    "continue with the appropriate sales engagement."
+                )
 
                 st.subheader("📝 AI Reasoning")
-                st.write(score["reason"])
+
+                st.write(
+                    f"This lead currently has an AI score of {lead_score}/100. "
+                    "The score is calculated using company profile, decision-maker, "
+                    "technology fit, industry fit, budget, engagement, and conversation signals."
+                )
+
+                st.divider()
+
+                # ============================================================
+                # RECOMMENDATION ENGINE
+                # ============================================================
+
+                st.subheader("🎯 Recommendation Engine")
+
+                if "lead_recommendations" not in st.session_state:
+                    st.session_state.lead_recommendations = {}
+
+                if lead_id not in st.session_state.lead_recommendations:
+
+                    st.info(
+                        "Generate an actionable engagement recommendation "
+                        "based on the lead's score and engagement signals."
+                    )
+
+                    if st.button(
+                        "💡 Generate Recommendation",
+                        key=f"recommend_{lead_id}",
+                        type="primary",
+                        width="stretch"
+                    ):
+
+                        with st.spinner("🤖 Generating engagement recommendation..."):
+
+                            recommendation_response = requests.post(
+                                "http://127.0.0.1:8000/recommendation/predict",
+                                json={
+                                    "industry": p["industry"],
+                                    "company": p.get("company", "Unknown"),
+                                    "company_size": p.get("company_size", "Unknown"),
+                                    "lead_status": p["status"],
+                                    "lead_score": lead_score,
+                                    "conversion_probability": 0,
+                                    "engagement_score": p.get("engagement_score", 50),
+                                    "tech_stack_match": p.get("tech_stack_match", 0),
+                                    "budget_score": p.get("budget_score", 50)
+                                }
+                            )
+                            if recommendation_response.status_code == 200:
+
+                                recommendation = recommendation_response.json()
+
+                                st.subheader("💡 Recommendation Engine")
+
+                                col1, col2 = st.columns(2)
+
+                                with col1:
+                                    st.markdown("### ⏰ Follow-up Timing")
+                                    st.info(recommendation["follow_up_timing"])
+
+                                with col2:
+                                    st.markdown("### 📡 Channel Mix")
+                                    st.success(
+                                        f"Primary: {recommendation['primary_channel']}\n\n"
+                                        f"Secondary: {recommendation['secondary_channel']}"
+                                    )
+
+                                st.markdown("### 📝 Content Strategy")
+                                st.write(recommendation["content_strategy"])
+
+                                st.markdown("### 💡 Why this recommendation?")
+                                st.caption(recommendation["reason"])
+
+                            else:
+                                st.error(
+                                    f"Recommendation failed: "
+                                    f"{recommendation_response.text}"
+                                )
+
+                        
+                else:
+
+                    recommendation = st.session_state.lead_recommendations[lead_id]
+
+                    st.markdown("### ⏱️ Follow-up Timing")
+
+                    st.info(
+                        recommendation["follow_up_timing"]
+                    )
+
+                    st.markdown("### 📡 Channel Mix")
+
+                    col1, col2 = st.columns(2)
+
+                    with col1:
+                        st.success(
+                            f"**Primary Channel**\n\n"
+                            f"{recommendation['primary_channel']}"
+                        )
+
+                    with col2:
+                        st.info(
+                            f"**Secondary Channel**\n\n"
+                            f"{recommendation['secondary_channel']}"
+                        )
+
+                    st.markdown("### 📝 Content Strategy")
+
+                    st.write(
+                        recommendation["content_strategy"]
+                    )
+
+                    st.markdown("### 💡 Recommendation Reason")
+
+                    st.caption(
+                        recommendation["reason"]
+                    )
+
+
         with conversation:
             st.subheader("💬 Conversation Intelligence")
 
@@ -624,7 +967,8 @@ def show_leads():
                         "transcript": transcript
                     }
                 )
-
+                print("🔥 OUTREACH STATUS:", response.status_code)
+                print("🔥 OUTREACH RESPONSE:", response.text)
                 if response.status_code == 200:
 
                     st.session_state[f"conversation_analysis_{p['id']}"] = {
@@ -787,7 +1131,12 @@ def show_leads():
             st.session_state.show_form = True
 
     if uploaded_file is not None:
-    
+
+        if st.button(
+            "📥 Import CSV",
+            use_container_width=True
+        ):
+
             files = {
                 "file": (
                     uploaded_file.name,
@@ -795,21 +1144,28 @@ def show_leads():
                     "text/csv"
                 )
             }
-    
+
             response = requests.post(
                 "http://127.0.0.1:8000/leads/import",
                 files=files
             )
-    
+
             if response.status_code == 200:
-                st.success(response.json()["message"])
+
+                st.success(
+                    response.json()["message"]
+                )
+
                 st.rerun()
+
             else:
-                st.error("CSV Import Failed")
-        
 
+                st.error(
+                    f"CSV Import Failed: "
+                    f"{response.status_code}"
+                )
 
-    
+                st.code(response.text)
 
     st.divider()
 
@@ -831,23 +1187,36 @@ def show_leads():
     # AI Recommendation Panel
     # ==========================================================
 
-    highest = max(filtered, key=lambda x: x["score"]) if filtered else None
+    highest = None
 
+    for p in filtered:
+
+        if p["id"] in st.session_state.lead_scores:
+
+            current_score = st.session_state.lead_scores[p["id"]]["lead_score"]
+
+            if highest is None or current_score > highest["_ai_score"]:
+                highest = {
+                    **p,
+                    "_ai_score": current_score
+                }
     if highest:
         st.markdown(
             f"""
             ### 🤖 AI Recommendation
             **{highest['company']}**
-            Highest Lead Score
+
+            Highest AI Lead Score: **{highest['_ai_score']}/100**
+
             Recommendation:
             ✔ Prioritize outreach this week.
             """
         )
 
-        st.progress(highest["score"]/100)
+        st.progress(highest["_ai_score"] / 100)
 
         st.caption(
-            f"Confidence: {highest['score']}%"
+            f"AI Lead Score: {highest['_ai_score']}/100"
         )
 
     st.divider()
@@ -906,20 +1275,30 @@ def show_leads():
 
             with right:
 
-                st.metric(
-                    "Lead Score",
-                    f"{p['score']}/100"
-                )
+                # Use the latest AI-generated score if available
+                ai_score = p.get("score")
+                if ai_score is not None:
 
-                st.progress(
-                    p["score"]/100
-                )
+                    st.metric(
+                        "🎯 AI Lead Score",
+                        f"{ai_score}/100"
+                    )
 
+                    st.progress(
+                        ai_score / 100
+                    )
+
+                else:
+
+                    st.metric(
+                        "🎯 AI Lead Score",
+                        "Not calculated"
+                    )
                 st.write("")
 
                 if st.button(
                     "👁 View Details",
-                    key=f"view_{p['company']}",
+                    key=f"view_{p['id']}",
                     use_container_width=True
                 ):
 
@@ -930,8 +1309,15 @@ def show_leads():
                     st.session_state.selected_prospect = lead
 
                     st.rerun()
-                if st.button("✏️ Edit", key=f"edit_{p['id']}"):
-                    edit_prospect_dialog(p)
+                edit_left, edit_button, edit_right = st.columns([1, 2, 1])
+
+                with edit_button:
+                        if st.button(
+                            "✏️ Edit",
+                            key=f"edit_{p['id']}",
+                            use_container_width=True
+                        ):
+                            edit_prospect_dialog(p)
                 
                 st.markdown("---")
     # ==========================================================
@@ -947,6 +1333,10 @@ def show_leads():
         with st.container(border=True):
 
             with st.form("prospect_form", clear_on_submit=True):
+
+                # ============================================================
+                # PROSPECT INFORMATION
+                # ============================================================
 
                 col1, col2 = st.columns(2)
 
@@ -997,10 +1387,51 @@ def show_leads():
                         "📞 Phone"
                     )
 
+                # ============================================================
+                # SALES / PIPELINE INFORMATION
+                # ============================================================
+
+                st.markdown("### 💼 Sales & Pipeline Information")
+
+                pipeline_col1, pipeline_col2 = st.columns(2)
+
+                with pipeline_col1:
+
+                    deal_value = st.number_input(
+                        "💰 Pipeline Value",
+                        min_value=0.0,
+                        value=0.0,
+                        step=1000.0,
+                        help="Estimated value of the potential deal."
+                    )
+
+                with pipeline_col2:
+
+                    pipeline_status = st.selectbox(
+                        "📊 Pipeline Status",
+                        [
+                            "New",
+                            "Qualified",
+                            "Contacted",
+                            "Proposal",
+                            "Negotiation",
+                            "Won",
+                            "Lost"
+                        ]
+                    )
+
+                # ============================================================
+                # NOTES
+                # ============================================================
+
                 notes = st.text_area(
                     "📝 Notes",
                     placeholder="Add important notes about this prospect..."
                 )
+
+                # ============================================================
+                # ACTION BUTTONS
+                # ============================================================
 
                 save_col, cancel_col = st.columns(2)
 
@@ -1018,9 +1449,13 @@ def show_leads():
                         use_container_width=True
                     )
 
+                # ============================================================
+                # SAVE PROSPECT
+                # ============================================================
+
                 if save:
 
-                    if company == "" or contact == "":
+                    if company.strip() == "" or contact.strip() == "":
 
                         st.error(
                             "Company Name and Contact Person are required."
@@ -1028,7 +1463,7 @@ def show_leads():
 
                     else:
 
-                        requests.post(
+                        response = requests.post(
                             "http://127.0.0.1:8000/leads/",
                             json={
                                 "company": company,
@@ -1039,22 +1474,51 @@ def show_leads():
                                 "website": website,
                                 "location": location,
                                 "industry": industry,
-                                "notes": notes
+                                "notes": notes,
+
+                                # Sales / Pipeline fields
+                                "deal_value": deal_value,
+                                "status": pipeline_status
                             }
                         )
-                        st.success(
-                            "✅ Prospect created successfully!"
-                        )
 
-                        st.balloons()
+                        print("🔥 CREATE PROSPECT RESPONSE:")
+                        print(response.status_code)
+                        print(response.text)
 
-                        st.session_state.show_form = False
+                        if response.status_code in [200, 201]:
 
-                        st.rerun()
+                            st.success(
+                                "✅ Prospect created successfully!"
+                            )
+
+                            st.balloons()
+
+                            # Close form
+                            st.session_state.show_form = False
+
+                            # Clear cached prospect data
+                            st.session_state.pop(
+                                "prospects",
+                                None
+                            )
+
+                            # Refresh page
+                            st.rerun()
+
+                        else:
+
+                            st.error(
+                                f"Unable to create prospect.\n\n"
+                                f"{response.text}"
+                            )
+
+                # ============================================================
+                # CANCEL
+                # ============================================================
 
                 if cancel:
 
                     st.session_state.show_form = False
 
                     st.rerun()
-    
