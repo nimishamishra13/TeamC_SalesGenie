@@ -22,7 +22,9 @@ class RegisterRequest(BaseModel):
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
-
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    new_password: str
 
 def get_db():
     db = SessionLocal()
@@ -76,6 +78,7 @@ def login_user(
     data: LoginRequest,
     db: Session = Depends(get_db)
 ):
+
     user = (
         db.query(User)
         .filter(User.email == data.email)
@@ -88,16 +91,40 @@ def login_user(
             detail="Invalid email or password"
         )
 
+    if user.is_locked:
+        raise HTTPException(
+            status_code=403,
+            detail="Your account is locked. Please reset your password."
+        )
+
     password_correct = bcrypt.checkpw(
         data.password.encode("utf-8"),
         user.password_hash.encode("utf-8")
     )
 
     if not password_correct:
+
+        user.failed_attempts += 1
+
+        if user.failed_attempts >= 5:
+            user.is_locked = True
+            db.commit()
+
+            raise HTTPException(
+                status_code=403,
+                detail="Account locked after 5 failed attempts."
+            )
+
+        db.commit()
+
         raise HTTPException(
             status_code=401,
-            detail="Invalid email or password"
+            detail=f"Invalid password. Remaining attempts: {5-user.failed_attempts}"
         )
+
+    user.failed_attempts = 0
+    user.is_locked = False
+    db.commit()
 
     return {
         "message": "Login successful",
@@ -106,4 +133,36 @@ def login_user(
             "name": user.name,
             "email": user.email
         }
+    }
+@router.post("/reset-password")
+def reset_password(
+    data: ResetPasswordRequest,
+    db: Session = Depends(get_db)
+):
+
+    user = (
+        db.query(User)
+        .filter(User.email == data.email)
+        .first()
+    )
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    password_hash = bcrypt.hashpw(
+        data.new_password.encode("utf-8"),
+        bcrypt.gensalt()
+    ).decode("utf-8")
+
+    user.password_hash = password_hash
+    user.failed_attempts = 0
+    user.is_locked = False
+
+    db.commit()
+
+    return {
+        "message": "Password reset successful"
     }
