@@ -1,9 +1,15 @@
 from typing import Dict
 
+from ai.tech_stack import detect_tech_stack
+
+
+# ==========================================================
+# COMPANY SIZE
+# ==========================================================
 
 def get_company_size(company: str) -> str:
     """
-    Estimate company size based on company name.
+    Determine company size from known enterprise companies.
     """
 
     enterprise = [
@@ -19,95 +25,239 @@ def get_company_size(company: str) -> str:
         "Wipro"
     ]
 
-    if company in enterprise:
+    company = (company or "").strip().lower()
+
+    if company in [name.lower() for name in enterprise]:
         return "Enterprise"
 
     return "SMB"
 
 
-def get_engagement_score(status: str) -> int:
+# ==========================================================
+# DECISION MAKER SCORE
+# ==========================================================
+
+def get_decision_maker_score(designation: str) -> int:
     """
-    Estimate engagement from lead status.
+    Score the authority of the contact person.
+
+    Maximum: 15
     """
 
-    mapping = {
-        "Hot": 90,
-        "Warm": 70,
-        "Cold": 40,
-        "New": 20
-    }
+    designation = (designation or "").lower().strip()
 
-    return mapping.get(status, 50)
+    # C-level / founders / owners
+    if any(role in designation for role in [
+        "ceo",
+        "cto",
+        "cio",
+        "cfo",
+        "coo",
+        "founder",
+        "owner",
+        "president"
+    ]):
+        return 15
 
+    # Senior leadership
+    if any(role in designation for role in [
+        "vp",
+        "vice president",
+        "director"
+    ]):
+        return 12
+
+    # Management
+    if "manager" in designation:
+        return 8
+
+    # Executive
+    if "executive" in designation:
+        return 5
+
+    return 3
+
+
+# ==========================================================
+# BUDGET SCORE
+# ==========================================================
 
 def get_budget_score(notes: str) -> int:
     """
-    Estimate budget from notes.
+    Estimate budget strength from CRM notes.
+
+    Score is normalized to 0-100.
     """
 
-    notes = notes.lower()
+    notes = (notes or "").lower()
 
-    if "enterprise" in notes or "large budget" in notes:
+    if "large budget" in notes:
+        return 100
+
+    if "enterprise budget" in notes:
         return 95
 
+    if "enterprise" in notes:
+        return 90
+
     if "budget" in notes:
-        return 80
+        return 75
 
     return 60
 
 
-def get_tech_stack_match(analysis: Dict) -> int:
+# ==========================================================
+# TECHNOLOGY STACK MATCH
+# ==========================================================
+
+def get_tech_stack_match(
+    lead,
+    analysis: Dict
+) -> int:
     """
-    Calculate tech stack compatibility.
+    Calculate technology compatibility.
+
+    Uses:
+    - Website
+    - CRM notes
+    - AI analysis
     """
 
-    tech_stack = analysis.get("tech_stack", [])
+    text = f"""
+    {lead.get("website", "")}
+    {lead.get("notes", "")}
+    {analysis.get("tech_stack", "")}
+    """
 
-    score = len(tech_stack) * 20
+    tech_stack = detect_tech_stack(text)
+
+    print(
+        "🔥 TECH STACK USED FOR SCORING:",
+        tech_stack
+    )
+
+    weights = {
+
+        # AI / ML
+        "Artificial Intelligence": 20,
+        "Machine Learning": 20,
+        "Deep Learning": 20,
+        "Generative AI": 20,
+
+        "PyTorch": 18,
+        "TensorFlow": 18,
+        "CUDA": 18,
+
+        # Cloud
+        "AWS": 15,
+        "Azure": 15,
+        "GCP": 15,
+
+        # Infrastructure
+        "Kubernetes": 15,
+        "Docker": 12,
+
+        # Programming
+        "Python": 10,
+        "Java": 10,
+        "Node.js": 8,
+
+        # Frontend
+        "React": 7,
+        "Angular": 7,
+        "Vue": 7,
+
+        # Databases
+        "PostgreSQL": 7,
+        "MongoDB": 7,
+        "MySQL": 5,
+        "Redis": 5,
+
+        # Data engineering
+        "Apache Spark": 10,
+        "Hadoop": 8,
+        "Databricks": 10
+    }
+
+    score = sum(
+        weights.get(tech, 5)
+        for tech in tech_stack
+    )
 
     return min(score, 100)
 
 
-def extract_features(lead, analysis):
+# ==========================================================
+# FEATURE ENGINEERING
+# ==========================================================
+
+def extract_features(
+    lead,
+    analysis
+):
     """
-    Prepare ML features from CRM + AI Analysis.
+    Prepare lead features for AI lead scoring.
+
+    IMPORTANT:
+    CRM status is NOT used to calculate engagement.
+
+    Hot / Warm / Cold is determined AFTER
+    the final AI lead score is calculated.
     """
 
-    return {
+    analysis = analysis or {}
 
-        "industry": lead["industry"],
+    company = lead.get("company", "")
+    industry = lead.get("industry", "")
+    notes = lead.get("notes", "")
+    designation = lead.get("designation", "")
 
-        "company_size": get_company_size(
-            lead["company"]
-        ),
+    # ------------------------------------------------------
+    # Calculate profile features
+    # ------------------------------------------------------
 
-        "lead_status": {
+    company_size = get_company_size(company)
 
-            "Hot": "Negotiation",
+    decision_maker_score = get_decision_maker_score(
+        designation
+    )
 
-            "Warm": "Qualified",
+    budget_score = get_budget_score(notes)
 
-            "Cold": "Contacted",
+    tech_stack_match = get_tech_stack_match(
+        lead,
+        analysis
+    )
 
-            "New": "New"
+    print(
+        "🔥 DESIGNATION RECEIVED:",
+        repr(designation)
+    )
 
-        }.get(lead["status"], "New"),
+    print(
+        "🔥 DECISION MAKER SCORE:",
+        decision_maker_score
+    )
 
-        "engagement_score": get_engagement_score(
-            lead["status"]
-        ),
+    # ------------------------------------------------------
+    # Return features
+    #
+    # Notice:
+    # NO lead status
+    # NO status-based engagement
+    # ------------------------------------------------------
 
-        "tech_stack_match": get_tech_stack_match(
-            analysis
-        ),
+    features = {
 
-        "budget_score": get_budget_score(
-            lead["notes"]
-        ),
+        "industry": industry,
 
-        "website_visits": 15,
+        "company_size": company_size,
 
-        "email_opens": 7,
+        "decision_maker_score": decision_maker_score,
 
-        "meetings": 2
+        "tech_stack_match": tech_stack_match,
+
+        "budget_score": budget_score
     }
+
+    return features
