@@ -5,22 +5,34 @@ LOGIN_URL = "http://127.0.0.1:8000/auth/login"
 
 
 def show_login():
+
     st.title("SalesGenie")
     st.subheader("Login")
 
-    email = st.text_input("Email", key="login_email")
+    email = st.text_input(
+        "Email",
+        key="login_email"
+    )
+
     password = st.text_input(
         "Password",
         type="password",
         key="login_password"
     )
 
-    if st.button("Login", use_container_width=True, key="login_button"):
+    if st.button(
+        "Login",
+        use_container_width=True,
+        key="login_button"
+    ):
 
         if not email or not password:
             st.warning("Please enter email and password.")
+
         else:
+
             try:
+
                 response = requests.post(
                     LOGIN_URL,
                     json={
@@ -31,6 +43,7 @@ def show_login():
                 )
 
                 if response.status_code == 200:
+
                     data = response.json()
 
                     st.session_state["logged_in"] = True
@@ -38,22 +51,40 @@ def show_login():
 
                     st.rerun()
 
-                elif response.status_code == 401:
-                    st.error("Invalid email or password.")
+                elif response.status_code in (401, 403):
+
+                    st.error(response.json()["detail"])
 
                 else:
-                    st.error(
-                        f"Login failed. Status code: {response.status_code}"
-                    )
+
+                    st.error("Login failed.")
 
             except requests.RequestException as e:
+
                 st.error(f"Unable to connect to backend: {e}")
 
     st.divider()
 
-    if st.button(
-        "Don't have an account? Sign Up",
-        key="go_to_register"
-    ):
-        st.session_state["auth_page"] = "register"
-        st.rerun()
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        if st.button(
+            "Forgot Password?",
+            use_container_width=True,
+            key="forgot_password"
+        ):
+
+            st.session_state["auth_page"] = "forgot_password"
+            st.rerun()
+
+    with col2:
+
+        if st.button(
+            "Don't have an account? Sign Up",
+            use_container_width=True,
+            key="go_to_register"
+        ):
+
+            st.session_state["auth_page"] = "register"
+            st.rerun()
