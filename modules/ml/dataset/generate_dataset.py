@@ -38,17 +38,11 @@ for _ in range(500):
     engagement = random.randint(20, 100)
     tech_stack_match = random.randint(20, 100)
     budget_score = random.randint(20, 100)
-    website_visits = random.randint(1, 25)
-    email_opens = random.randint(0, 12)
-    meetings = random.randint(0, 5)
 
     score = (
         engagement * 0.30 +
         tech_stack_match * 0.20 +
-        budget_score * 0.20 +
-        website_visits * 1.5 +
-        email_opens * 2 +
-        meetings * 5
+        budget_score * 0.20 
     )
 
     if status == "Negotiation":
@@ -74,9 +68,6 @@ for _ in range(500):
         "engagement_score": engagement,
         "tech_stack_match": tech_stack_match,
         "budget_score": budget_score,
-        "website_visits": website_visits,
-        "email_opens": email_opens,
-        "meetings": meetings,
         "converted": converted
     })
 
