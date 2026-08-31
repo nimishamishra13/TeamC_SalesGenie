@@ -27,15 +27,12 @@ def predict_lead(features):
 if __name__ == "__main__":
 
     sample = {
-        "industry": "Technology",
-        "company_size": "Enterprise",
-        "lead_status": "Negotiation",
-        "engagement_score": 90,
-        "tech_stack_match": 95,
-        "budget_score": 88,
-        "website_visits": 18,
-        "email_opens": 9,
-        "meetings": 3
-    }
+    "industry": "Technology",
+    "company_size": "Enterprise",
+    "lead_status": "Negotiation",
+    "engagement_score": 90,
+    "tech_stack_match": 95,
+    "budget_score": 88
+}
 
     print(predict_lead(sample))
