@@ -13,8 +13,11 @@ from modules.module3_outreach import router as outreach_router
 
 # Module 4 (AI Lead Scoring + Recommendation)
 from modules.module4_scoring import router as scoring_router
-
+from modules.module4_recommendation import router as recommendation_router
 from modules.module5_conversation import router as conversation_router
+from modules.module6_dashboard import router as dashboard_router
+# Milestone 4 — End-to-End Integration Pipeline
+from modules.pipeline import router as pipeline_router
 app = FastAPI()
 
 # Create tables
@@ -31,5 +34,7 @@ app.include_router(outreach_router)
 
 # Include Module 4 
 app.include_router(scoring_router)
-
+app.include_router(recommendation_router)
 app.include_router(conversation_router)
+app.include_router(dashboard_router)
+app.include_router(pipeline_router)
