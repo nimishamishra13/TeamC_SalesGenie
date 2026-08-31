@@ -1,78 +1,1125 @@
-/* ===========================
-   Sidebar
-=========================== */
+/* =========================================================
+   SALES GENIE - MODERN ENTERPRISE UI
+   Clean + Colourful + Professional
+   ========================================================= */
+
+
+/* =========================================================
+   GLOBAL PAGE
+   ========================================================= */
+
+.stApp {
+    background: #F6F8FC;
+}
+
+.main .block-container {
+    padding-top: 2rem;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    padding-bottom: 3rem;
+}
+
+
+/* =========================================================
+   HEADINGS
+   ========================================================= */
+
+h1 {
+    color: #111827 !important;
+    font-weight: 750 !important;
+    letter-spacing: -0.5px;
+}
+
+h2 {
+    color: #1F2937 !important;
+    font-weight: 700 !important;
+}
+
+h3 {
+    color: #1F2937 !important;
+    font-weight: 650 !important;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
 section[data-testid="stSidebar"] {
-    background-color: #13294B;
+    background: linear-gradient(
+        180deg,
+        #13294B 0%,
+        #172F55 55%,
+        #1B3A66 100%
+    );
+
+    border-right: 1px solid rgba(255,255,255,0.08);
 }
 
 section[data-testid="stSidebar"] * {
     color: white !important;
 }
 
-/* ===========================
-   Buttons
-=========================== */
-.stButton > button {
-    background-color: #13294B;
-    color: white;
+
+/* Sidebar navigation */
+
+section[data-testid="stSidebar"] [role="radiogroup"] {
+    gap: 6px;
+}
+
+section[data-testid="stSidebar"] [role="radio"] {
     border-radius: 10px;
+    padding: 8px 12px;
+    transition: all 0.2s ease;
+}
+
+section[data-testid="stSidebar"] [role="radio"]:hover {
+    background: rgba(255,255,255,0.10);
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.stButton > button {
+    background: linear-gradient(
+        135deg,
+        #13294B,
+        #2563EB
+    );
+
+    color: white !important;
     border: none;
+    border-radius: 10px;
+
     padding: 10px 20px;
-    font-weight: 600;
+
+    font-weight: 650;
+    font-size: 14px;
+
+    box-shadow: 0 3px 8px rgba(37,99,235,0.18);
+
+    transition: all 0.2s ease;
 }
 
 .stButton > button:hover {
-    background-color: #1B3A66;
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 14px rgba(37,99,235,0.25);
+
+    background: linear-gradient(
+        135deg,
+        #1B3A66,
+        #4F46E5
+    );
 }
 
-/* ===========================
-   Headings
-=========================== */
-h1, h2, h3 {
-    color: #111827;
-}
 
-/* ===========================
-   Dashboard Metric Cards
-=========================== */
+/* =========================================================
+   METRIC CARDS
+   ========================================================= */
+
 div[data-testid="stMetric"] {
-    background: #ffffff !important;
+
+    background: white !important;
+
     border: 1px solid #E5E7EB;
-    border-radius: 12px;
-    padding: 18px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+    border-radius: 16px;
+
+    padding: 20px;
+
+    box-shadow:
+        0 3px 12px rgba(15,23,42,0.06);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+    position: relative;
+
+    overflow: hidden;
 }
 
-/* Make ALL text inside metric cards dark */
+
+/* Small coloured accent */
+
+div[data-testid="stMetric"]::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 4px;
+    height: 100%;
+
+    background: linear-gradient(
+        180deg,
+        #2563EB,
+        #4F46E5
+    );
+}
+
+
+div[data-testid="stMetric"]:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 25px rgba(15,23,42,0.10);
+}
+
+
+/* Metric text */
+
 div[data-testid="stMetric"] * {
     color: #111827 !important;
 }
 
-/* Metric Label */
+
+/* Metric label */
+
 div[data-testid="stMetricLabel"] {
+
     color: #6B7280 !important;
+
     font-weight: 600 !important;
+
     font-size: 14px !important;
 }
 
-/* Metric Value */
+
+/* Metric value */
+
 div[data-testid="stMetricValue"] {
+
     color: #111827 !important;
-    font-size: 32px !important;
-    font-weight: 700 !important;
+
+    font-size: 30px !important;
+
+    font-weight: 750 !important;
 }
 
-/* Metric Delta */
+
+/* Metric delta */
+
 div[data-testid="stMetricDelta"] {
+
     color: #16A34A !important;
+
     font-weight: 600 !important;
 }
 
-/* ===========================
-   Main Page
-=========================== */
-.main .block-container {
-    padding-top: 2rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+
+/* =========================================================
+   EMAIL CARD
+   ========================================================= */
+
+.email-card {
+
+    background: white;
+
+    color: #1F2937;
+
+    border: 1px solid #E5E7EB;
+
+    border-radius: 16px;
+
+    padding: 24px;
+
+    line-height: 1.8;
+
+    font-size: 15px;
+
+    box-shadow:
+        0 3px 12px rgba(15,23,42,0.06);
+
+    margin-top: 12px;
+
+    white-space: pre-wrap;
+
+    transition: all 0.25s ease;
+}
+
+.email-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(15,23,42,0.10);
+}
+
+
+/* =========================================================
+   LEAD SUMMARY CARD
+   ========================================================= */
+
+.lead-summary {
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 22px 24px;
+
+    border: 1px solid #E5E7EB;
+
+    box-shadow:
+        0 3px 12px rgba(15,23,42,0.06);
+
+    margin-bottom: 20px;
+
+    transition: all 0.25s ease;
+}
+
+.lead-summary:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(15,23,42,0.10);
+}
+
+
+.lead-summary h3 {
+
+    margin-top: 0;
+
+    margin-bottom: 18px;
+
+    color: #1F2937;
+}
+
+
+/* =========================================================
+   SUMMARY ROW
+   ========================================================= */
+
+.summary-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 11px 0;
+
+    border-bottom:
+        1px solid #F1F5F9;
+}
+
+.summary-row:last-child {
+
+    border-bottom: none;
+}
+
+
+.summary-label {
+
+    font-weight: 600;
+
+    color: #6B7280;
+}
+
+
+.summary-value {
+
+    font-weight: 650;
+
+    color: #111827;
+}
+
+
+/* =========================================================
+   INPUT BOXES
+   ========================================================= */
+
+.stTextInput input,
+.stTextArea textarea,
+.stSelectbox div[data-baseweb="select"] {
+
+    border-radius: 10px !important;
+
+    border: 1px solid #D1D5DB !important;
+
+    background: white !important;
+
+    transition: all 0.2s ease;
+}
+
+
+.stTextInput input:focus,
+.stTextArea textarea:focus {
+
+    border-color: #4F46E5 !important;
+
+    box-shadow:
+        0 0 0 2px rgba(79,70,229,0.12) !important;
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.stTabs [data-baseweb="tab-list"] {
+
+    gap: 8px;
+
+    border-bottom:
+        1px solid #E5E7EB;
+}
+
+
+.stTabs [data-baseweb="tab"] {
+
+    border-radius: 8px 8px 0 0;
+
+    padding: 10px 18px;
+
+    font-weight: 600;
+
+    color: #6B7280;
+}
+
+
+.stTabs [aria-selected="true"] {
+
+    color: #2563EB !important;
+}
+
+
+/* =========================================================
+   ALERT / INFO BOXES
+   ========================================================= */
+
+div[data-testid="stAlert"] {
+
+    border-radius: 12px;
+
+    border: none;
+
+    box-shadow:
+        0 2px 8px rgba(15,23,42,0.05);
+}
+
+
+/* =========================================================
+   DATAFRAME / TABLE
+   ========================================================= */
+
+div[data-testid="stDataFrame"] {
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    border: 1px solid #E5E7EB;
+
+    box-shadow:
+        0 3px 10px rgba(15,23,42,0.05);
+}
+
+
+/* =========================================================
+   DIVIDERS
+   ========================================================= */
+
+hr {
+
+    border: none;
+
+    border-top:
+        1px solid #E5E7EB;
+
+    margin: 24px 0;
+}
+
+
+/* =========================================================
+   CUSTOM INSIGHT CARDS
+   ========================================================= */
+
+.insight-card {
+
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 18px;
+
+    border: 1px solid #E5E7EB;
+
+    box-shadow:
+        0 3px 10px rgba(15,23,42,0.05);
+
+    margin-bottom: 12px;
+
+    transition: all 0.2s ease;
+}
+
+
+.insight-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(15,23,42,0.09);
+}
+
+
+/* =========================================================
+   SCORE BADGES
+   ========================================================= */
+
+.score-high {
+
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    background: #DCFCE7;
+
+    color: #166534;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+.score-medium {
+
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    background: #FEF3C7;
+
+    color: #92400E;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+.score-low {
+
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    background: #FEE2E2;
+
+    color: #991B1B;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.page-header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #13294B 0%,
+            #2563EB 65%,
+            #4F46E5 100%
+        );
+
+    color: white;
+
+    padding: 24px 28px;
+
+    border-radius: 18px;
+
+    margin-bottom: 24px;
+
+    box-shadow:
+        0 8px 24px rgba(37,99,235,0.18);
+}
+
+
+.page-header h1,
+.page-header h2,
+.page-header h3 {
+
+    color: white !important;
+
+    margin-bottom: 6px;
+}
+
+
+.page-header p {
+
+    color: rgba(255,255,255,0.82);
+
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   SMALL RESPONSIVE IMPROVEMENT
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .main .block-container {
+
+        padding-left: 1rem;
+
+        padding-right: 1rem;
+    }
+}
+/* =========================================================
+   SALES GENIE - PREMIUM SIDEBAR
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   SIDEBAR BASE
+   --------------------------------------------------------- */
+
+section[data-testid="stSidebar"] {
+
+    background:
+        radial-gradient(
+            circle at 15% 5%,
+            rgba(79, 70, 229, 0.18),
+            transparent 28%
+        ),
+        linear-gradient(
+            180deg,
+            #0B1B33 0%,
+            #102746 48%,
+            #132E53 100%
+        );
+
+    border-right: 1px solid rgba(255,255,255,0.07);
+}
+
+
+/* Sidebar width */
+
+section[data-testid="stSidebar"] > div {
+
+    padding-top: 1.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+
+/* All sidebar text */
+
+section[data-testid="stSidebar"] * {
+    color: white;
+}
+
+
+/* ---------------------------------------------------------
+   BRAND
+   --------------------------------------------------------- */
+
+.sg-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 4px 7px 10px 7px;
+}
+
+
+/* Logo */
+
+.sg-logo {
+
+    width: 42px;
+    height: 42px;
+
+    min-width: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #6366F1,
+            #2563EB
+        );
+
+    font-size: 22px;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 7px 20px rgba(37,99,235,0.30);
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+/* Small shine */
+
+.sg-logo::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 22px;
+    height: 60px;
+
+    background: rgba(255,255,255,0.14);
+
+    transform: rotate(35deg);
+
+    left: -35px;
+
+    top: -10px;
+
+    transition: 0.5s;
+}
+
+
+.sg-logo:hover::after {
+
+    left: 55px;
+}
+
+
+/* Brand name */
+
+.sg-brand-name {
+
+    font-size: 21px;
+
+    font-weight: 800;
+
+    letter-spacing: -0.6px;
+
+    line-height: 1.1;
+}
+
+
+/* Tagline */
+
+.sg-brand-tagline {
+
+    margin-top: 4px;
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    letter-spacing: 0.4px;
+
+    color: rgba(255,255,255,0.52) !important;
+}
+
+
+/* ---------------------------------------------------------
+   DIVIDER
+   --------------------------------------------------------- */
+
+.sg-divider {
+
+    height: 1px;
+
+    margin: 14px 5px 20px 5px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,0.14),
+            transparent
+        );
+}
+
+
+/* ---------------------------------------------------------
+   SECTION LABEL
+   --------------------------------------------------------- */
+
+.sg-section-label {
+
+    padding: 0 8px 9px 8px;
+
+    font-size: 9px;
+
+    font-weight: 750;
+
+    letter-spacing: 1.5px;
+
+    color: rgba(255,255,255,0.40) !important;
+}
+
+
+/* ---------------------------------------------------------
+   RADIO GROUP
+   --------------------------------------------------------- */
+
+section[data-testid="stSidebar"]
+[role="radiogroup"] {
+
+    gap: 5px;
+
+    width: 100%;
+}
+
+
+/* Hide radio circles */
+
+section[data-testid="stSidebar"]
+[role="radio"] > div:first-child {
+
+    display: none !important;
+}
+
+
+/* Navigation item */
+
+section[data-testid="stSidebar"]
+[role="radio"] {
+
+    width: 100%;
+
+    min-height: 44px;
+
+    padding: 11px 13px;
+
+    margin: 2px 0;
+
+    border-radius: 11px;
+
+    background: transparent;
+
+    color: rgba(255,255,255,0.68) !important;
+
+    font-size: 14px;
+
+    font-weight: 550;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+    cursor: pointer;
+}
+
+
+/* Navigation hover */
+
+section[data-testid="stSidebar"]
+[role="radio"]:hover {
+
+    background:
+        rgba(255,255,255,0.07);
+
+    color: white !important;
+
+    transform: translateX(3px);
+}
+
+
+/* Selected navigation */
+
+section[data-testid="stSidebar"]
+[role="radio"][aria-checked="true"] {
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(79,70,229,0.95),
+            rgba(37,99,235,0.75)
+        ) !important;
+
+    color: white !important;
+
+    font-weight: 650;
+
+    box-shadow:
+        0 7px 18px rgba(37,99,235,0.20);
+}
+
+
+/* Selected left accent */
+
+section[data-testid="stSidebar"]
+[role="radio"][aria-checked="true"]::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    width: 3px;
+
+    height: 22px;
+
+    border-radius: 0 4px 4px 0;
+
+    background: white;
+}
+
+
+/* ---------------------------------------------------------
+   PROFILE SECTION
+   --------------------------------------------------------- */
+
+.sg-profile-space {
+
+    height: 24px;
+}
+
+
+/* Profile card */
+
+.sg-profile-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 12px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.095),
+            rgba(255,255,255,0.045)
+        );
+
+    border: 1px solid rgba(255,255,255,0.10);
+
+    box-shadow:
+        0 8px 22px rgba(0,0,0,0.12);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.sg-profile-card:hover {
+
+    transform: translateY(-2px);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.13),
+            rgba(255,255,255,0.06)
+        );
+}
+
+
+/* Avatar */
+
+.sg-avatar {
+
+    width: 39px;
+    height: 39px;
+
+    min-width: 39px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #818CF8,
+            #2563EB
+        );
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 4px 12px rgba(37,99,235,0.25);
+}
+
+
+/* User information */
+
+.sg-user-details {
+
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+/* Name */
+
+.sg-user-name {
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* Email */
+
+.sg-user-email {
+
+    margin-top: 2px;
+
+    font-size: 9px;
+
+    color: rgba(255,255,255,0.45) !important;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* Active status */
+
+.sg-active-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin-top: 5px;
+
+    font-size: 9px;
+
+    color: rgba(255,255,255,0.62) !important;
+}
+
+
+/* Green status */
+
+.sg-status-dot {
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: #22C55E;
+
+    box-shadow:
+        0 0 7px rgba(34,197,94,0.75);
+}
+
+
+/* ---------------------------------------------------------
+   REMOVE DEFAULT RADIO LABEL
+   --------------------------------------------------------- */
+
+section[data-testid="stSidebar"]
+.stRadio > label {
+
+    display: none;
+}
+/* =====================================================
+   MAIN CONTENT TEXT
+   ===================================================== */
+
+.main,
+.main * {
+    color: #111827;
+}
+
+
+/* Headings */
+
+.main h1,
+.main h2,
+.main h3,
+.main h4 {
+    color: #111827 !important;
+}
+
+
+/* Normal text */
+
+.main p,
+.main span,
+.main label {
+    color: #374151;
+}
+
+
+/* Captions */
+
+.main [data-testid="stCaptionContainer"] {
+    color: #6B7280 !important;
+}
+
+
+/* Metric cards */
+
+div[data-testid="stMetric"] * {
+    color: #111827 !important;
+}
+
+
+/* Metric labels */
+
+div[data-testid="stMetricLabel"] {
+    color: #6B7280 !important;
+}
+
+
+/* Metric values */
+
+div[data-testid="stMetricValue"] {
+    color: #111827 !important;
 }
