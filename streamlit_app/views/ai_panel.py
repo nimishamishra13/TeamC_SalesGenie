@@ -37,7 +37,6 @@ def show_ai_analysis(lead):
 
         report = st.session_state.ai_reports[lead_id]
 
-        st.metric("AI Lead Score", report["lead_score"])
         st.subheader("🛠 Tech Stack Ingestion")
 
         if report["tech_stack"]:
