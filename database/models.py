@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
+import datetime
 
+from sqlalchemy import Column, DateTime, Float, Integer, String, Boolean
+from sqlalchemy.orm import relationship
+from datetime import datetime
 from database.connection import Base
 
 class Lead(Base):
@@ -29,7 +31,34 @@ class Lead(Base):
     status = Column(String)
 
     notes = Column(String)
-    conversations = relationship("Conversation", back_populates="lead")
+    ai_status = Column(String)
+    deal_value = Column(Float, default=0)
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
+
+    closed_at = Column(
+        DateTime,
+        nullable=True
+    )
+    conversations = relationship(
+        "Conversation",
+        back_populates="lead"
+    )
+
+    crm_activities = relationship(
+        "CRMActivity",
+        back_populates="lead",
+        cascade="all, delete-orphan"
+    )
+
+    outreach_history = relationship(
+        "OutreachHistory",
+        back_populates="lead",
+        cascade="all, delete-orphan"
+    )
 
 
 from sqlalchemy import ForeignKey, Text
@@ -55,6 +84,7 @@ class Conversation(Base):
 
     lead = relationship("Lead", back_populates="conversations")
 
+
 class User(Base):
     __tablename__ = "users"
 
@@ -65,3 +95,65 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
 
     password_hash = Column(String, nullable=False)
+    failed_attempts = Column(Integer, default=0)
+    is_locked = Column(Boolean, default=False)
+
+class CRMActivity(Base):
+    __tablename__ = "crm_activities"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    lead_id = Column(
+        Integer,
+        ForeignKey("leads.id"),
+        nullable=False
+    )
+
+    activity_type = Column(
+        String,
+        nullable=False
+    )
+
+    description = Column(Text)
+
+    activity_date = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
+
+    lead = relationship(
+        "Lead",
+        back_populates="crm_activities"
+    )
+
+class OutreachHistory(Base):
+    __tablename__ = "outreach_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    lead_id = Column(
+        Integer,
+        ForeignKey("leads.id"),
+        nullable=False
+    )
+
+    channel = Column(String)
+
+    subject = Column(String)
+
+    content = Column(Text)
+
+    status = Column(
+        String,
+        default="Generated"
+    )
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
+
+    lead = relationship(
+        "Lead",
+        back_populates="outreach_history"
+    )
